@@ -8,53 +8,52 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark-first premium theme */
-    --background: 220 15% 8%;
-    --foreground: 210 20% 98%;
+    /* Linear-inspired dark theme */
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 13% 10%;
-    --card-foreground: 210 20% 98%;
+    --surface: 0 0% 8%;
+    --surface-hover: 0 0% 12%;
 
-    --popover: 220 15% 9%;
-    --popover-foreground: 210 20% 98%;
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --primary: 176 70% 55%;
-    --primary-foreground: 220 15% 8%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    --secondary: 220 12% 15%;
-    --secondary-foreground: 210 20% 98%;
+    --primary: 243 75% 59%;
+    --primary-foreground: 0 0% 100%;
 
-    --muted: 220 12% 14%;
-    --muted-foreground: 215 15% 60%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
 
-    --accent: 176 70% 55%;
-    --accent-foreground: 220 15% 8%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
 
-    --destructive: 0 72% 58%;
-    --destructive-foreground: 210 20% 98%;
+    --accent: 243 75% 59%;
+    --accent-foreground: 0 0% 100%;
 
-    --border: 220 13% 18%;
-    --input: 220 13% 18%;
-    --ring: 176 70% 55%;
+    --destructive: 0 63% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 243 75% 59%;
 
-    /* Sidebar tokens */
-    --sidebar-background: 220 15% 7%;
-    --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 176 70% 55%;
-    --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 12% 12%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 220 13% 15%;
-    --sidebar-ring: 176 70% 55%;
+    --text-primary: 0 0% 95%;
+    --text-secondary: 0 0% 70%;
+    --text-tertiary: 0 0% 50%;
 
-    /* Custom tokens */
-    --surface: 220 13% 11%;
-    --surface-hover: 220 13% 14%;
-    --text-primary: 210 20% 98%;
-    --text-secondary: 215 15% 65%;
-    --text-tertiary: 215 12% 45%;
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 80%;
+    --sidebar-primary: 243 75% 59%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 12%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 12%;
+    --sidebar-ring: 243 75% 59%;
+
+    --radius: 6px;
   }
 
   .light {

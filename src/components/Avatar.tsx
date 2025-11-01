@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 interface AvatarProps {
   name: string;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   className?: string;
 }
 
@@ -15,15 +15,16 @@ export const Avatar = ({ name, size = "md", className }: AvatarProps) => {
     .slice(0, 2);
 
   const sizeClasses = {
+    xs: "w-5 h-5 text-[10px]",
     sm: "w-7 h-7 text-xs",
     md: "w-9 h-9 text-sm",
-    lg: "w-12 h-12 text-base",
+    lg: "w-11 h-11 text-base",
   };
 
   return (
     <div
       className={cn(
-        "rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center font-medium text-primary",
+        "rounded-full bg-primary/20 text-primary flex items-center justify-center font-semibold",
         sizeClasses[size],
         className
       )}
