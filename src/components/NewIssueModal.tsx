@@ -91,6 +91,7 @@ export interface Issue {
   status: string;
   priority: string;
   assignee: string;
+  createdBy: string;
   labels: string[];
   links: Link[];
   subIssues: SubIssue[];
@@ -340,6 +341,7 @@ export const NewIssueModal = ({ open, onOpenChange, onIssueCreated }: NewIssueMo
       status,
       priority,
       assignee: "LB Lakshya Bagani",
+      createdBy: "LB Lakshya Bagani",
       labels,
       links,
       subIssues: subIssues.filter(s => s.saved),

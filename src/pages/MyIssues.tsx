@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useParams, useLocation } from "react-router-dom";
 import { Filter, SlidersHorizontal, CircleDot, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,8 @@ const tabs = [
 ];
 
 const MyIssues = () => {
+  const { tab } = useParams<{ tab?: string }>();
+  const location = useLocation();
   const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
   const [issues, setIssues] = useState<Issue[]>([]);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -25,13 +27,34 @@ const MyIssues = () => {
     Duplicate: true,
   });
 
+  // Determine active tab from URL
+  const activeTab = (() => {
+    if (tab) return tab;
+    const path = location.pathname;
+    if (path === "/my-issues") return "my-issues";
+    const lastSegment = path.split("/").pop();
+    return lastSegment || "my-issues";
+  })();
+
   useEffect(() => {
     loadIssues();
   }, []);
 
   const loadIssues = () => {
     const storedIssues = JSON.parse(localStorage.getItem("issues") || "[]");
-    setIssues(storedIssues);
+    // Migrate old issues to include createdBy field if missing
+    const migratedIssues = storedIssues.map((issue: Issue) => {
+      if (!issue.createdBy) {
+        // Default to assignee if createdBy is missing (for backward compatibility)
+        issue.createdBy = issue.assignee || "LB Lakshya Bagani";
+      }
+      return issue;
+    });
+    // Save migrated issues back if there were changes
+    if (migratedIssues.length > 0 && storedIssues.some((issue: Issue) => !issue.createdBy)) {
+      localStorage.setItem("issues", JSON.stringify(migratedIssues));
+    }
+    setIssues(migratedIssues);
   };
 
   const toggleSection = (status: string) => {
@@ -41,8 +64,33 @@ const MyIssues = () => {
     }));
   };
 
+  // Filter issues based on active tab
+  const getFilteredIssues = () => {
+    const currentUser = "LB Lakshya Bagani";
+    
+    switch (activeTab) {
+      case "assigned":
+        // Show issues assigned to the user
+        return issues.filter((issue) => issue.assignee === currentUser);
+      case "created":
+        // Show issues created by the user
+        return issues.filter((issue) => issue.createdBy === currentUser);
+      case "subscribed":
+        // For now, show empty (can be implemented later with subscription tracking)
+        return [];
+      case "activity":
+        // For now, show empty (can be implemented later with activity tracking)
+        return [];
+      case "my-issues":
+      default:
+        // Show all issues assigned to the user (same as assigned for now)
+        return issues.filter((issue) => issue.assignee === currentUser);
+    }
+  };
+
   const getIssuesByStatus = (status: string) => {
-    return issues.filter((issue) => issue.status === status);
+    const filteredIssues = getFilteredIssues();
+    return filteredIssues.filter((issue) => issue.status === status);
   };
 
   const formatDate = (dateString: string) => {
@@ -52,7 +100,8 @@ const MyIssues = () => {
   };
 
   const statusOrder = ["Backlog", "Todo", "In Progress", "Done", "Cancelled", "Duplicate"];
-  const hasIssues = issues.length > 0;
+  const filteredIssues = getFilteredIssues();
+  const hasIssues = filteredIssues.length > 0;
 
   return (
     <div className="h-full flex flex-col bg-background">
@@ -166,7 +215,15 @@ const MyIssues = () => {
 
             <div className="space-y-2">
               <p className="text-muted-foreground text-sm">
-                No issues assigned to you
+                {activeTab === "created" 
+                  ? "No issues created by you"
+                  : activeTab === "assigned" || activeTab === "my-issues"
+                  ? "No issues assigned to you"
+                  : activeTab === "subscribed"
+                  ? "No subscribed issues"
+                  : activeTab === "activity"
+                  ? "No activity"
+                  : "No issues"}
               </p>
             </div>
 

@@ -13,10 +13,14 @@ import {
   CreditCard,
   FileUp,
   UserPlus,
-  Github
+  Github,
+  Search,
+  PenSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/Avatar";
+import { Button } from "@/components/ui/button";
+import { NewIssueModal } from "@/components/NewIssueModal";
 
 const mainNav = [
   { name: "Inbox", href: "/inbox", icon: Inbox },
@@ -35,20 +39,46 @@ const tryNav = [
   { name: "Link GitHub", href: "/github", icon: Github },
 ];
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onCommandClick?: () => void;
+}
+
+export const Sidebar = ({ onCommandClick }: SidebarProps) => {
   const [teamsExpanded, setTeamsExpanded] = useState(true);
   const [teamExpanded, setTeamExpanded] = useState(true);
+  const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
 
   return (
-    <aside className="w-60 border-r border-border bg-sidebar-background flex flex-col text-sm">
-      {/* User/Workspace selector */}
-      <div className="p-3 border-b border-border">
-        <button className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors">
-          <Avatar name="Sst.scaler" size="xs" />
-          <span className="font-medium text-sidebar-foreground flex-1 text-left">Sst.scaler</span>
-          <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-        </button>
-      </div>
+    <>
+      <aside className="w-60 border-r border-border bg-sidebar-background flex flex-col text-sm">
+        {/* User/Workspace selector */}
+        <div className="p-3 border-b border-border">
+          <div className="flex items-center gap-2">
+            <button className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors">
+              <Avatar name="Sst.scaler" size="xs" />
+              <span className="font-medium text-sidebar-foreground flex-1 text-left">Sst.scaler</span>
+              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+            </button>
+            {onCommandClick && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-surface"
+                onClick={onCommandClick}
+              >
+                <Search className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-surface"
+              onClick={() => setIsNewIssueModalOpen(true)}
+            >
+              <PenSquare className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
 
       {/* Main Navigation */}
       <nav className="flex-1 px-2 py-2 overflow-y-auto">
@@ -213,5 +243,11 @@ export const Sidebar = () => {
         </button>
       </div>
     </aside>
+
+    <NewIssueModal
+      open={isNewIssueModalOpen}
+      onOpenChange={setIsNewIssueModalOpen}
+    />
+    </>
   );
 };
