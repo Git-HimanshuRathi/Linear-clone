@@ -22,7 +22,7 @@ export const MainLayout = () => {
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
-      <Sidebar />
+      <Sidebar onCommandClick={() => setCommandOpen(true)} />
       
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar onCommandClick={() => setCommandOpen(true)} />
