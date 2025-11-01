@@ -2,41 +2,90 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { OnboardingProvider, useOnboarding } from "./contexts/OnboardingContext";
 import { MainLayout } from "./components/Layout/MainLayout";
 import MyIssues from "./pages/MyIssues";
 import Inbox from "./pages/Inbox";
 import Dashboard from "./pages/Dashboard";
+import Projects from "./pages/Projects";
+import Views from "./pages/Views";
+import More from "./pages/More";
+import ImportIssues from "./pages/ImportIssues";
+import InvitePeople from "./pages/InvitePeople";
+import LinkGitHub from "./pages/LinkGitHub";
 import NotFound from "./pages/NotFound";
+import Welcome from "./pages/onboarding/Welcome";
+import ThemeSelection from "./pages/onboarding/ThemeSelection";
+import SubscribeToUpdates from "./pages/onboarding/SubscribeToUpdates";
+import JoinOrCreateTeam from "./pages/onboarding/JoinOrCreateTeam";
+import InviteCoWorkers from "./pages/onboarding/InviteCoWorkers";
+import CommandMenuIntro from "./pages/onboarding/CommandMenuIntro";
+import ConnectGitHub from "./pages/onboarding/ConnectGitHub";
+import OnboardingComplete from "./pages/onboarding/OnboardingComplete";
 
 const queryClient = new QueryClient();
+
+// Protected route component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isCompleted } = useOnboarding();
+  
+  if (!isCompleted) {
+    return <Navigate to="/onboarding/welcome" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Onboarding Routes */}
+      <Route path="/onboarding/welcome" element={<Welcome />} />
+      <Route path="/onboarding/theme" element={<ThemeSelection />} />
+      <Route path="/onboarding/subscribe" element={<SubscribeToUpdates />} />
+      <Route path="/onboarding/team" element={<JoinOrCreateTeam />} />
+      <Route path="/onboarding/invite" element={<InviteCoWorkers />} />
+      <Route path="/onboarding/command-menu" element={<CommandMenuIntro />} />
+      <Route path="/onboarding/github" element={<ConnectGitHub />} />
+      <Route path="/onboarding/complete" element={<OnboardingComplete />} />
+
+      {/* Main App Routes - Protected by onboarding completion */}
+      <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/inbox" element={<Inbox />} />
+        <Route path="/my-issues" element={<MyIssues />} />
+        <Route path="/my-issues/:tab" element={<MyIssues />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/views" element={<Views />} />
+        <Route path="/more" element={<More />} />
+        <Route path="/team/issues" element={<Dashboard />} />
+        <Route path="/team/projects" element={<Dashboard />} />
+        <Route path="/team/views" element={<Dashboard />} />
+        <Route path="/import" element={<ImportIssues />} />
+        <Route path="/invite" element={<InvitePeople />} />
+        <Route path="/github" element={<LinkGitHub />} />
+      </Route>
+
+      {/* Root redirect - handled by ProtectedRoute */}
+      
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/inbox" element={<Inbox />} />
-            <Route path="/my-issues" element={<MyIssues />} />
-            <Route path="/my-issues/:tab" element={<MyIssues />} />
-            <Route path="/projects" element={<Dashboard />} />
-            <Route path="/views" element={<Dashboard />} />
-            <Route path="/more" element={<Dashboard />} />
-            <Route path="/team/issues" element={<Dashboard />} />
-            <Route path="/team/projects" element={<Dashboard />} />
-            <Route path="/team/views" element={<Dashboard />} />
-            <Route path="/import" element={<Dashboard />} />
-            <Route path="/invite" element={<Dashboard />} />
-            <Route path="/github" element={<Dashboard />} />
-          </Route>
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <OnboardingProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </OnboardingProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
