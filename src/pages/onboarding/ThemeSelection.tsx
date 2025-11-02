@@ -27,7 +27,7 @@ const ThemeSelection = () => {
   };
 
   const handleContinue = () => {
-    navigate("/onboarding/subscribe");
+    navigate("/onboarding/github");
   };
 
   return (

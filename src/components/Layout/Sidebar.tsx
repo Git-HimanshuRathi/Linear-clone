@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { 
   Inbox, 
@@ -15,23 +15,39 @@ import {
   UserPlus,
   Github,
   Search,
-  PenSquare
+  PenSquare,
+  UserSquare,
+  Pencil
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/ui/button";
 import { NewIssueModal } from "@/components/NewIssueModal";
 import { InvitePeopleModal } from "@/components/InvitePeopleModal";
+import CustomizeSidebarModal from "@/components/CustomizeSidebarModal";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useOnboarding } from "@/contexts/OnboardingContext";
 
 const mainNav = [
   { name: "Inbox", href: "/inbox", icon: Inbox },
   { name: "My issues", href: "/my-issues", icon: CheckSquare },
 ];
 
-const workspaceNav = [
-  { name: "Projects", href: "/projects", icon: FolderKanban },
-  { name: "Views", href: "/views", icon: LayoutGrid },
-  { name: "More", href: "/more", icon: MoreHorizontal },
+const allWorkspaceItems = [
+  { id: "projects", name: "Projects", href: "/projects", icon: FolderKanban },
+  { id: "views", name: "Views", href: "/views", icon: LayoutGrid },
+  { id: "teams", name: "Teams", href: "/teams", icon: UserSquare },
+  { id: "members", name: "Members", href: "/members", icon: Users },
 ];
 
 const tryNav = [
@@ -49,6 +65,15 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
   const [teamExpanded, setTeamExpanded] = useState(true);
   const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
   const [isInvitePeopleModalOpen, setIsInvitePeopleModalOpen] = useState(false);
+  const [isCustomizeSidebarModalOpen, setIsCustomizeSidebarModalOpen] = useState(false);
+  const [tempVisibleItem, setTempVisibleItem] = useState<"teams" | "members" | null>(null);
+  const navigate = useNavigate();
+  const { resetOnboarding } = useOnboarding();
+
+  const handleLogout = () => {
+    resetOnboarding();
+    navigate("/");
+  };
 
   return (
     <>
@@ -56,11 +81,45 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
         {/* User/Workspace selector */}
         <div className="p-3 border-b border-border">
           <div className="flex items-center gap-2">
-            <button className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors">
-              <Avatar name="Sst.scaler" size="xs" />
-              <span className="font-medium text-sidebar-foreground flex-1 text-left">Sst.scaler</span>
-              <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors">
+                  <Avatar name="Hacakthon-L" size="xs" />
+                  <span className="font-medium text-sidebar-foreground flex-1 text-left truncate">Hacakthon-L...</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuItem>
+                  <span>Settings</span>
+                  <DropdownMenuShortcut>G then S</DropdownMenuShortcut>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setIsInvitePeopleModalOpen(true)}>
+                  <span>Invite and manage members</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <span>Download desktop app</span>
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger>
+                    <span>Switch workspace</span>
+                    <DropdownMenuShortcut>O then W</DropdownMenuShortcut>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>
+                      <Avatar name="Hacakthon-L" size="xs" className="mr-2" />
+                      <span>Hacakthon-L...</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout}>
+                  <span>Log out</span>
+                  <DropdownMenuShortcut>Alt ↑ Q</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {onCommandClick && (
               <Button
                 variant="ghost"
@@ -110,23 +169,80 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
             Workspace
           </div>
           <div className="space-y-0.5">
-            {workspaceNav.map((item) => (
-              <NavLink
-                key={item.name}
-                to={item.href}
-                className={({ isActive }) =>
-                  cn(
-                    "flex items-center gap-2.5 px-2 py-1.5 rounded-md transition-colors",
-                    isActive
-                      ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "text-sidebar-foreground hover:bg-surface"
-                  )
+            {allWorkspaceItems
+              .filter((item) => {
+                // Always show projects and views
+                if (item.id === "projects" || item.id === "views") return true;
+                // Show teams or members only if it's the temp visible item
+                if (item.id === "teams" || item.id === "members") {
+                  return tempVisibleItem === item.id;
                 }
-              >
-                <item.icon className="w-4 h-4" />
-                <span>{item.name}</span>
-              </NavLink>
-            ))}
+                return false;
+              })
+              .map((item) => (
+                <NavLink
+                  key={item.id}
+                  to={item.href}
+                  onClick={(e) => {
+                    // Clear temp item when clicking projects or views
+                    if (item.id === "projects" || item.id === "views") {
+                      setTempVisibleItem(null);
+                    }
+                  }}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex items-center gap-2.5 px-2 py-1.5 rounded-md transition-colors",
+                      isActive
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground hover:bg-surface"
+                    )
+                  }
+                >
+                  <item.icon className="w-4 h-4" />
+                  <span>{item.name}</span>
+                </NavLink>
+              ))}
+            {/* More dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md transition-colors text-sidebar-foreground hover:bg-surface"
+                  )}
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                  <span>More</span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-48">
+                {tempVisibleItem !== "members" && (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setTempVisibleItem("members");
+                      navigate("/members");
+                    }}
+                  >
+                    <Users className="w-4 h-4 mr-2" />
+                    <span>Members</span>
+                  </DropdownMenuItem>
+                )}
+                {tempVisibleItem !== "teams" && (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setTempVisibleItem("teams");
+                      navigate("/teams");
+                    }}
+                  >
+                    <UserSquare className="w-4 h-4 mr-2" />
+                    <span>Teams</span>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => setIsCustomizeSidebarModalOpen(true)}>
+                  <Pencil className="w-4 h-4 mr-2" />
+                  <span>Customize sidebar</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
@@ -272,6 +388,10 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
     <InvitePeopleModal
       open={isInvitePeopleModalOpen}
       onOpenChange={setIsInvitePeopleModalOpen}
+    />
+    <CustomizeSidebarModal
+      open={isCustomizeSidebarModalOpen}
+      onOpenChange={setIsCustomizeSidebarModalOpen}
     />
     </>
   );

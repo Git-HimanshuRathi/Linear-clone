@@ -11,7 +11,7 @@ const SubscribeToUpdates = () => {
   const [marketingEnabled, setMarketingEnabled] = useState(false);
 
   const handleContinue = () => {
-    navigate("/onboarding/team");
+    navigate("/onboarding/complete");
   };
 
   return (
