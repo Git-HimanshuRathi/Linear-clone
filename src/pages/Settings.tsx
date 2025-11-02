@@ -35,6 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import CustomizeSidebarModal from "@/components/CustomizeSidebarModal";
 
 type SettingsSection = 
@@ -104,6 +106,40 @@ const Settings = () => {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState<SettingsSection>("preferences");
   const [isCustomizeSidebarModalOpen, setIsCustomizeSidebarModalOpen] = useState(false);
+  
+  // JIRA API settings
+  const [jiraProjectKey, setJiraProjectKey] = useState(() => 
+    localStorage.getItem("jiraProjectKey") || "FLINK"
+  );
+  const [useJiraApi, setUseJiraApi] = useState(() => 
+    localStorage.getItem("useJiraApi") !== "false"
+  );
+  const [jiraProxyUrl, setJiraProxyUrl] = useState(() => 
+    localStorage.getItem("jiraProxyUrl") || ""
+  );
+  const [fetchStats, setFetchStats] = useState(() => 
+    localStorage.getItem("jiraFetchStats") !== "false" // Default to true
+  );
+
+  useEffect(() => {
+    localStorage.setItem("jiraProjectKey", jiraProjectKey);
+  }, [jiraProjectKey]);
+
+  useEffect(() => {
+    localStorage.setItem("useJiraApi", String(useJiraApi));
+  }, [useJiraApi]);
+
+  useEffect(() => {
+    if (jiraProxyUrl) {
+      localStorage.setItem("jiraProxyUrl", jiraProxyUrl);
+    } else {
+      localStorage.removeItem("jiraProxyUrl");
+    }
+  }, [jiraProxyUrl]);
+
+  useEffect(() => {
+    localStorage.setItem("jiraFetchStats", String(fetchStats));
+  }, [fetchStats]);
   
   // Parse section from URL if present
   useEffect(() => {
@@ -202,6 +238,96 @@ const Settings = () => {
             <Switch defaultChecked />
           </div>
         </div>
+      </div>
+
+      {/* Data Sources Section */}
+      <div className="space-y-3">
+        <h2 className="text-lg font-semibold text-foreground mb-4">Data Sources</h2>
+        
+        {/* Use JIRA API */}
+        <div className="bg-surface rounded-lg p-4 border border-border">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <label className="text-sm font-medium text-foreground">Use Apache JIRA API</label>
+              <p className="text-sm text-muted-foreground mt-1">
+                Fetch real issues from Apache JIRA (issues.apache.org)
+              </p>
+            </div>
+            <Switch checked={useJiraApi} onCheckedChange={setUseJiraApi} />
+          </div>
+        </div>
+
+        {/* JIRA Project Key */}
+        {useJiraApi && (
+          <>
+            <div className="bg-surface rounded-lg p-4 border border-border">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-foreground">Apache JIRA Project Key</Label>
+                <Input
+                  type="text"
+                  value={jiraProjectKey}
+                  onChange={(e) => setJiraProjectKey(e.target.value.toUpperCase())}
+                  placeholder="FLINK"
+                  className="bg-background border-border max-w-[200px]"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Popular projects: FLINK, KAFKA, SPARK, HADOOP, CASSANDRA, LUCENE, SOLR
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  View all projects at{" "}
+                  <a 
+                    href="https://issues.apache.org/jira/projects" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    issues.apache.org/jira/projects
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            {/* Fetch Project Stats */}
+            <div className="bg-surface rounded-lg p-4 border border-border">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <label className="text-sm font-medium text-foreground">Fetch Project Statistics</label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Fetch issue counts and health metrics for projects (slower but more detailed)
+                  </p>
+                </div>
+                <Switch checked={fetchStats} onCheckedChange={setFetchStats} />
+              </div>
+            </div>
+
+            {/* CORS Proxy (Advanced) */}
+            <div className="bg-surface rounded-lg p-4 border border-border">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-foreground">
+                  CORS Proxy URL (Advanced)
+                </Label>
+                <Input
+                  type="text"
+                  value={jiraProxyUrl}
+                  onChange={(e) => setJiraProxyUrl(e.target.value)}
+                  placeholder="Leave empty to use default"
+                  className="bg-background border-border"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Due to CORS restrictions, requests are routed through a proxy. 
+                  The app will automatically try multiple free proxies if one fails.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  <strong>Note:</strong> Free proxies have rate limits and may timeout. For better reliability, 
+                  consider setting up your own proxy server or using a paid CORS proxy service.
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Format: <code className="text-xs bg-muted px-1 py-0.5 rounded">https://proxy-url/?url=</code> or <code className="text-xs bg-muted px-1 py-0.5 rounded">https://proxy-url/raw?url=</code>
+                </p>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Interface and theme Section */}

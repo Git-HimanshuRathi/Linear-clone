@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-import { Filter, SlidersHorizontal, Plus, Circle, CircleDot } from "lucide-react";
+import { Filter, SlidersHorizontal, Plus, Circle, CircleDot, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Issue } from "@/components/NewIssueModal";
 import { Avatar } from "@/components/Avatar";
+import { useIssues } from "@/hooks/useJiraIssues";
 
 // Custom icons matching Linear design
 const StackedSquaresIcon = ({ className }: { className?: string }) => (
@@ -48,8 +49,18 @@ const tabs = [
 ];
 
 const TeamIssues = () => {
-  const [issues, setIssues] = useState<Issue[]>([]);
   const location = useLocation();
+
+  // Get project key from localStorage or use default
+  const projectKey = localStorage.getItem("jiraProjectKey") || "FLINK";
+  const useApiData = localStorage.getItem("useJiraApi") !== "false"; // Default to true
+
+  // Fetch issues from JIRA API
+  const { data: issues = [], isLoading, isError, error, refetch } = useIssues({
+    projectKey: useApiData ? projectKey : undefined,
+    enabled: useApiData,
+    maxResults: 50,
+  });
 
   // Determine active tab from URL
   const activeTab = (() => {
@@ -60,13 +71,12 @@ const TeamIssues = () => {
   })();
 
   useEffect(() => {
-    loadIssues();
-  }, []);
-
-  const loadIssues = () => {
-    const storedIssues = JSON.parse(localStorage.getItem("issues") || "[]");
-    setIssues(storedIssues);
-  };
+    // Also load local issues for backward compatibility if API is disabled
+    if (!useApiData) {
+      const storedIssues = JSON.parse(localStorage.getItem("issues") || "[]");
+      // Issues are already merged in the hook, but we can handle local-only mode here
+    }
+  }, [useApiData]);
 
   // Filter issues based on active tab
   const getFilteredIssues = () => {
@@ -193,8 +203,34 @@ const TeamIssues = () => {
         </Button>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Loading issues from Apache JIRA...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && !isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 max-w-md text-center">
+            <AlertCircle className="w-12 h-12 text-destructive" />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">Failed to load issues</p>
+              <p className="text-xs text-muted-foreground">{error?.message || "Unknown error occurred"}</p>
+            </div>
+            <Button variant="outline" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
-      {filteredIssues.length > 0 ? (
+      {!isLoading && !isError && filteredIssues.length > 0 ? (
         <div className="flex-1 overflow-y-auto px-6 py-3">
           {statusOrder.map((status) => {
             const statusIssues = getIssuesByStatus(status);

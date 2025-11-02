@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { KanbanColumn } from "./KanbanColumn";
 import { TaskModal } from "./TaskModal";
-import { initialKanbanTasks } from "@/data/mockData";
 
 export interface Task {
   id: string;
@@ -73,7 +72,7 @@ export const KanbanBoard = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   useEffect(() => {
-    // Load tasks from localStorage or use initial data
+    // Load tasks from localStorage only (no dummy data)
     const storedTasks = localStorage.getItem("kanbanTasks");
     if (storedTasks) {
       const parsedTasks = JSON.parse(storedTasks).map((task: Task) => ({
@@ -85,7 +84,7 @@ export const KanbanBoard = () => {
       }));
       setTasks(parsedTasks);
     } else {
-      setTasks(initialKanbanTasks);
+      setTasks([]); // Start with empty kanban board
     }
   }, []);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);

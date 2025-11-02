@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { NavLink, useParams, useLocation } from "react-router-dom";
-import { Filter, SlidersHorizontal, CircleDot, ChevronDown, LayoutGrid, Loader2, Minus, Circle } from "lucide-react";
+import { Filter, SlidersHorizontal, CircleDot, ChevronDown, LayoutGrid, Loader2, Minus, Circle, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { NewIssueModal, Issue } from "@/components/NewIssueModal";
 import { Avatar } from "@/components/Avatar";
+import { useIssues } from "@/hooks/useJiraIssues";
 
 const tabs = [
   { name: "My issues", href: "/my-issues" },
@@ -19,7 +20,6 @@ const MyIssues = () => {
   const { tab } = useParams<{ tab?: string }>();
   const location = useLocation();
   const [isNewIssueModalOpen, setIsNewIssueModalOpen] = useState(false);
-  const [issues, setIssues] = useState<Issue[]>([]);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     Backlog: true,
     Todo: true,
@@ -27,6 +27,17 @@ const MyIssues = () => {
     Done: true,
     Cancelled: true,
     Duplicate: true,
+  });
+
+  // Get project key from localStorage or use default
+  const projectKey = localStorage.getItem("jiraProjectKey") || "FLINK";
+  const useApiData = localStorage.getItem("useJiraApi") !== "false"; // Default to true
+
+  // Fetch issues from JIRA API
+  const { data: issues = [], isLoading, isError, error, refetch } = useIssues({
+    projectKey: useApiData ? projectKey : undefined,
+    enabled: useApiData,
+    maxResults: 50,
   });
 
   // Determine active tab from URL
@@ -39,24 +50,23 @@ const MyIssues = () => {
   })();
 
   useEffect(() => {
-    loadIssues();
-  }, []);
+    // Also load local issues for backward compatibility
+    if (!useApiData) {
+      const storedIssues = JSON.parse(localStorage.getItem("issues") || "[]");
+      const migratedIssues = storedIssues.map((issue: Issue) => {
+        if (!issue.createdBy) {
+          issue.createdBy = issue.assignee || "LB Lakshya Bagani";
+        }
+        return issue;
+      });
+      if (migratedIssues.length > 0 && storedIssues.some((issue: Issue) => !issue.createdBy)) {
+        localStorage.setItem("issues", JSON.stringify(migratedIssues));
+      }
+    }
+  }, [useApiData]);
 
   const loadIssues = () => {
-    const storedIssues = JSON.parse(localStorage.getItem("issues") || "[]");
-    // Migrate old issues to include createdBy field if missing
-    const migratedIssues = storedIssues.map((issue: Issue) => {
-      if (!issue.createdBy) {
-        // Default to assignee if createdBy is missing (for backward compatibility)
-        issue.createdBy = issue.assignee || "LB Lakshya Bagani";
-      }
-      return issue;
-    });
-    // Save migrated issues back if there were changes
-    if (migratedIssues.length > 0 && storedIssues.some((issue: Issue) => !issue.createdBy)) {
-      localStorage.setItem("issues", JSON.stringify(migratedIssues));
-    }
-    setIssues(migratedIssues);
+    refetch();
   };
 
   const toggleSection = (status: string) => {
@@ -161,8 +171,34 @@ const MyIssues = () => {
         </Button>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Loading issues from Apache JIRA...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && !isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 max-w-md text-center">
+            <AlertCircle className="w-12 h-12 text-destructive" />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">Failed to load issues</p>
+              <p className="text-xs text-muted-foreground">{error?.message || "Unknown error occurred"}</p>
+            </div>
+            <Button variant="outline" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Content */}
-      {hasIssues ? (
+      {!isLoading && !isError && hasIssues ? (
         <div className="flex-1 overflow-y-auto px-6 py-3">
           {statusOrder.map((status) => {
             const statusIssues = getIssuesByStatus(status);

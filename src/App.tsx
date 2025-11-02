@@ -31,7 +31,14 @@ import CommandMenuIntro from "./pages/onboarding/CommandMenuIntro";
 import ConnectGitHub from "./pages/onboarding/ConnectGitHub";
 import OnboardingComplete from "./pages/onboarding/OnboardingComplete";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -102,7 +109,12 @@ const App = () => (
       <Toaster />
       <Sonner />
       <OnboardingProvider>
-        <BrowserRouter>
+        <BrowserRouter
+          future={{
+            v7_startTransition: true,
+            v7_relativeSplatPath: true,
+          }}
+        >
           <AppRoutes />
         </BrowserRouter>
       </OnboardingProvider>

@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react";
 import { Inbox as InboxIcon, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { initialInboxNotifications, InboxNotification } from "@/data/mockData";
+import { InboxNotification } from "@/data/mockData";
 
 const Inbox = () => {
   const [notifications, setNotifications] = useState<InboxNotification[]>([]);
 
   useEffect(() => {
-    // Load notifications from localStorage
+    // Load notifications from localStorage only (no dummy data)
     const stored = localStorage.getItem("inboxNotifications");
     if (stored) {
       setNotifications(JSON.parse(stored));
     } else {
-      setNotifications(initialInboxNotifications);
+      setNotifications([]); // Start with empty inbox
     }
   }, []);
 

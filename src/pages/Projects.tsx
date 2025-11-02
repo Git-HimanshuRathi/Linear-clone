@@ -20,6 +20,7 @@ import {
   PlayCircle,
   CheckCircle2,
   XCircle,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -27,6 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { NewProjectModal } from "@/components/NewProjectModal";
 import { cn } from "@/lib/utils";
+import { useProjects } from "@/hooks/useJiraProjects";
 
 // Dashed circle icon component
 const DashedCircle = ({ className }: { className?: string }) => (
@@ -108,7 +110,6 @@ const defaultStatusOptions = [
 
 const Projects = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<Project[]>([]);
   const [activeView, setActiveView] = useState<"all" | "new-view">("all");
   const [openPriorityDropdown, setOpenPriorityDropdown] = useState<string | null>(null);
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(null);
@@ -116,26 +117,33 @@ const Projects = () => {
   const [selectedDates, setSelectedDates] = useState<Record<string, Date | undefined>>({});
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
 
+  // Get project key from localStorage or use default
+  const useApiData = localStorage.getItem("useJiraApi") !== "false"; // Default to true
+
+  // Fetch projects from JIRA API
+  const { data: projectsData = [], isLoading, isError, error, refetch } = useProjects({
+    enabled: useApiData,
+  });
+
+  // Ensure all projects have required fields with defaults
+  const projects = projectsData.map((project: Project) => ({
+    ...project,
+    color: project.color || "#5E6AD2",
+    icon: project.icon || "📁",
+    health: project.health || "No updates",
+  }));
+
   const loadProjects = () => {
-    const stored = localStorage.getItem("projects");
-    if (stored) {
-      const parsedProjects = JSON.parse(stored);
-      // Ensure all projects have required fields with defaults
-      const projectsWithDefaults = parsedProjects.map((project: Project) => ({
-        ...project,
-        color: project.color || "#5E6AD2",
-        icon: project.icon || "📁",
-        health: project.health || "No updates",
-      }));
-      setProjects(projectsWithDefaults);
-    } else {
-      setProjects([]);
-    }
+    refetch();
   };
 
+  // Sync projects to state when API data changes
   useEffect(() => {
-    loadProjects();
-  }, []);
+    if (projectsData.length > 0 && useApiData) {
+      // Save merged projects to localStorage for local edits
+      localStorage.setItem("projects", JSON.stringify(projectsData));
+    }
+  }, [projectsData, useApiData]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return null;
@@ -145,31 +153,48 @@ const Projects = () => {
   };
 
   const updateProjectPriority = (projectId: string, priority: string) => {
-    const updatedProjects = projects.map(project => 
-      project.id === projectId ? { ...project, priority } : project
-    );
-    setProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    // Update in localStorage to persist user edits
+    const stored = localStorage.getItem("projects");
+    if (stored) {
+      const parsedProjects = JSON.parse(stored);
+      const updatedProjects = parsedProjects.map((project: Project) => 
+        project.id === projectId ? { ...project, priority } : project
+      );
+      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      // Trigger refetch to update UI
+      refetch();
+    }
     setOpenPriorityDropdown(null);
   };
 
   const updateProjectStatus = (projectId: string, status: string) => {
-    const updatedProjects = projects.map(project => 
-      project.id === projectId ? { ...project, status } : project
-    );
-    setProjects(updatedProjects);
-    localStorage.setItem("projects", JSON.stringify(updatedProjects));
+    // Update in localStorage to persist user edits
+    const stored = localStorage.getItem("projects");
+    if (stored) {
+      const parsedProjects = JSON.parse(stored);
+      const updatedProjects = parsedProjects.map((project: Project) => 
+        project.id === projectId ? { ...project, status } : project
+      );
+      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      // Trigger refetch to update UI
+      refetch();
+    }
     setOpenStatusDropdown(null);
   };
 
   const updateProjectDate = (projectId: string, date: Date | undefined) => {
     setSelectedDates(prev => ({ ...prev, [projectId]: date }));
     if (date) {
-      const updatedProjects = projects.map(project => 
-        project.id === projectId ? { ...project, targetDate: date.toISOString() } : project
-      );
-      setProjects(updatedProjects);
-      localStorage.setItem("projects", JSON.stringify(updatedProjects));
+      const stored = localStorage.getItem("projects");
+      if (stored) {
+        const parsedProjects = JSON.parse(stored);
+        const updatedProjects = parsedProjects.map((project: Project) => 
+          project.id === projectId ? { ...project, targetDate: date.toISOString().split('T')[0] } : project
+        );
+        localStorage.setItem("projects", JSON.stringify(updatedProjects));
+        // Trigger refetch to update UI
+        refetch();
+      }
     }
     setOpenDatePicker(null);
   };
@@ -267,9 +292,36 @@ const Projects = () => {
         </Button>
       </div>
 
+      {/* Loading State */}
+      {isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Loading projects from Apache JIRA...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {isError && !isLoading && (
+        <div className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 max-w-md text-center">
+            <AlertCircle className="w-12 h-12 text-destructive" />
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">Failed to load projects</p>
+              <p className="text-xs text-muted-foreground">{error?.message || "Unknown error occurred"}</p>
+            </div>
+            <Button variant="outline" onClick={() => refetch()}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Project Table */}
-      <div className="flex-1 overflow-y-auto">
-        {projects.length > 0 ? (
+      {!isLoading && !isError && (
+        <div className="flex-1 overflow-y-auto">
+          {projects.length > 0 ? (
           <div className="px-6 py-4">
             <table className="w-full border-collapse table-fixed">
               <colgroup>
@@ -511,7 +563,8 @@ const Projects = () => {
             </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
 
       <NewProjectModal
         open={isNewProjectModalOpen}
