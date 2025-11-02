@@ -21,17 +21,15 @@ export const MainLayout = () => {
   });
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#090909] text-foreground">
+    <div className="flex h-screen w-full overflow-hidden">
       <Sidebar onCommandClick={() => setCommandOpen(true)} />
       
-      <div className="flex flex-1 flex-col overflow-hidden px-4 pt-2 pb-4 bg-[#090909]">
-        <div className="flex flex-1 flex-col overflow-hidden bg-muted/30 rounded-lg border border-border/50 shadow-sm">
-          <TopBar onCommandClick={() => setCommandOpen(true)} />
-          
-          <main className="flex-1 overflow-y-auto pt-1">
-            <Outlet />
-          </main>
-        </div>
+      <div className="flex flex-1 flex-col overflow-hidden ml-[260px]" style={{ backgroundColor: "#111214" }}>
+        <TopBar onCommandClick={() => setCommandOpen(true)} />
+        
+        <main className="flex-1 overflow-y-auto pt-5" style={{ paddingTop: "20px", color: "#FFFFFF" }}>
+          <Outlet />
+        </main>
       </div>
 
       <CommandPalette open={commandOpen} onOpenChange={setCommandOpen} />

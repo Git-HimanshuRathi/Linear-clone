@@ -30,6 +30,15 @@ import { NewProjectModal } from "@/components/NewProjectModal";
 import { cn } from "@/lib/utils";
 import { useProjects } from "@/hooks/useJiraProjects";
 
+// Custom Filter icon matching Linear design - funnel shape with decreasing widths, left-aligned
+const FilterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <line x1="2" y1="5" x2="12" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="8" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="11" x2="7" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
 // Dashed circle icon component
 const DashedCircle = ({ className }: { className?: string }) => (
   <svg
@@ -283,23 +292,39 @@ const Projects = () => {
       </div>
 
       {/* Filter and Display Bar */}
-      <div className="border-b border-border flex items-center justify-between px-5 py-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 text-muted-foreground hover:text-foreground px-2"
+      <div className="border-b flex items-center justify-between px-5 py-2" style={{ borderColor: "#1A1C1E" }}>
+        <button
+          className="flex items-center gap-1.5 h-7 px-2 rounded-md transition-colors"
+          style={{
+            background: "transparent",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#1A1C1E";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+          }}
         >
-          <Filter className="w-3.5 h-3.5" />
+          <FilterIcon className="w-3.5 h-3.5" />
           <span className="text-xs">Filter</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 text-muted-foreground hover:text-foreground px-2.5"
+        </button>
+        <button
+          className="flex items-center gap-1.5 h-7 px-2.5 rounded-md transition-colors"
+          style={{
+            background: "#232527",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#2B2D2F";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#232527";
+          }}
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span className="text-xs">Display</span>
-        </Button>
+        </button>
       </div>
 
       {/* Loading State */}

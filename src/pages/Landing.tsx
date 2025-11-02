@@ -95,7 +95,7 @@ const Landing = () => {
             <Button 
               onClick={handleAuth}
               size="sm" 
-              className="bg-foreground text-background hover:bg-foreground/90"
+              className="bg-foreground text-background hover:bg-foreground/90 rounded-xl"
             >
               Sign up
             </Button>
@@ -105,10 +105,10 @@ const Landing = () => {
 
       {/* Hero Section */}
       <main className="container mx-auto px-6 py-20">
-        <div className="max-w-4xl text-left space-y-6 mb-20 ml-14 md:ml-20 lg:ml-44">
+        <div className="max-w-4xl text-left space-y-5 mb-20 ml-14 md:ml-20 lg:ml-44">
           {/* Main Headline */}
           <h1 
-            className={`text-4xl md:text-5xl lg:text-6xl font-inter font-medium leading-tight transition-all duration-1000 mt-8 max-w-3xl ${
+            className={`text-4xl md:text-5xl lg:text-6xl font-inter font-medium leading-tight transition-all duration-1000 mt-4 max-w-3xl ${
               isLoaded 
                 ? 'opacity-100 blur-none translate-y-0' 
                 : 'opacity-0 blur-md translate-y-4'
@@ -120,7 +120,7 @@ const Landing = () => {
 
           {/* Sub-headline */}
           <p 
-            className={`text-lg md:text-xl text-foreground/70 max-w-3xl leading-relaxed transition-all duration-1000 delay-200 ${
+            className={`text-base md:text-lg text-foreground/70 max-w-3xl leading-normal transition-all duration-1000 delay-200 ${
               isLoaded 
                 ? 'opacity-100 blur-none translate-y-0' 
                 : 'opacity-0 blur-md translate-y-4'
@@ -131,7 +131,7 @@ const Landing = () => {
           </p>
 
           {/* CTAs */}
-          <div className={`flex items-center gap-6 pt-4 transition-all duration-1000 delay-300 ${
+          <div className={`flex items-center gap-6 pt-2 transition-all duration-1000 delay-300 ${
               isLoaded 
                 ? 'opacity-100 blur-none translate-y-0' 
                 : 'opacity-0 blur-md translate-y-4'
@@ -139,7 +139,7 @@ const Landing = () => {
             <Button
               onClick={handleStartBuilding}
               size="lg"
-              className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base"
+              className="bg-foreground text-background hover:bg-foreground/90 px-8 py-6 text-base rounded-xl"
             >
               Start building.
             </Button>

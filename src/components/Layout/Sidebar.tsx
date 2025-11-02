@@ -138,16 +138,16 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
 
   return (
     <>
-      <aside className="w-60 bg-[#090909] flex flex-col text-[13px]">
+      <aside className="w-[260px] bg-[#0B0B0D] flex flex-col h-full fixed left-0 top-0 overflow-y-auto">
         {/* User/Workspace selector */}
         <div className="p-2.5 pb-1.5">
           <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="flex-1 flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-surface transition-colors">
+                <button className="flex-1 flex items-center gap-2 px-2 h-8 rounded-md hover:bg-[#1A1C1E]" style={{ transition: "opacity 120ms ease-in-out" }}>
                   <Avatar name="Hacakthon-L" size="xs" />
-                  <span className="text-sm font-medium text-sidebar-foreground flex-1 text-left truncate">Hacakthon-L...</span>
-                  <SolidChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                  <span className="text-sm font-medium flex-1 text-left truncate" style={{ fontSize: "14px", fontWeight: 500, color: "#FFFFFF" }}>Hacakthon-L...</span>
+                  <SolidChevronDown className="w-3.5 h-3.5" style={{ color: "#B4B5B8" }} />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-56">
@@ -182,23 +182,21 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
               </DropdownMenuContent>
             </DropdownMenu>
             {onCommandClick && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-surface"
+              <button
+                className="h-7 w-7 rounded-md hover:bg-[#1A1C1E] flex items-center justify-center"
+                style={{ transition: "opacity 120ms ease-in-out" }}
                 onClick={onCommandClick}
               >
-                <Search className="h-4 w-4" />
-              </Button>
+                <Search className="h-4 w-4" style={{ color: "#B4B5B8" }} />
+              </button>
             )}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-surface"
+            <button
+              className="h-7 w-7 rounded-md hover:bg-[#1A1C1E] flex items-center justify-center"
+              style={{ transition: "opacity 120ms ease-in-out" }}
               onClick={() => setIsNewIssueModalOpen(true)}
             >
-              <PenSquare className="h-4 w-4" />
-            </Button>
+              <PenSquare className="h-4 w-4" style={{ color: "#B4B5B8" }} />
+            </button>
           </div>
         </div>
 
@@ -211,15 +209,16 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
               to={item.href}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center gap-2 py-1.5 rounded-md transition-colors pl-[10px]",
+                  "flex items-center gap-2 h-8 rounded-md pl-2",
                   isActive
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground hover:bg-surface"
+                    ? "bg-[#232527] text-[#FFFFFF]"
+                    : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                 )
               }
+              style={{ transition: "opacity 120ms ease-in-out" }}
             >
-              <item.icon className="w-4 h-4" />
-              <span>{item.name}</span>
+              <item.icon className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+              <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>{item.name}</span>
             </NavLink>
           ))}
         </div>
@@ -228,7 +227,15 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
         <div className="mb-3">
           <button
             onClick={() => setWorkspaceExpanded(!workspaceExpanded)}
-            className="w-full px-2 py-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground tracking-wider hover:text-foreground transition-colors mb-1"
+            className="w-full px-2 py-1 flex items-center gap-1.5 mb-1"
+            style={{ 
+              transition: "opacity 120ms ease-in-out",
+              fontSize: "11px", 
+              fontWeight: 500, 
+              textTransform: "uppercase", 
+              letterSpacing: "0.5px",
+              color: "#6F7074"
+            }}
           >
             <span>Workspace</span>
             {workspaceExpanded ? (
@@ -261,58 +268,97 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
                   }}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-2 py-1.5 rounded-md transition-colors pl-[10px]",
+                      "flex items-center gap-2 h-8 rounded-md pl-2",
                       isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-surface"
+                        ? "bg-[#232527] text-[#FFFFFF]"
+                        : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                     )
                   }
+                  style={{ transition: "opacity 120ms ease-in-out" }}
                 >
-                  <item.icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <item.icon className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                  <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>{item.name}</span>
                 </NavLink>
               ))}
             {/* More dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
-                  className={cn(
-                    "w-full flex items-center gap-2 py-1.5 rounded-md transition-colors text-sidebar-foreground hover:bg-surface pl-[10px]"
-                  )}
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                  <span>More</span>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-44 !bg-[#1c1d1f] !border-[#383b42] p-0.5">
-                {tempVisibleItem !== "members" && (
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setTempVisibleItem("members");
-                      navigate("/members");
-                    }}
-                    className="py-1 hover:!bg-[#292b30] focus:!bg-[#292b30]"
+                    className={cn(
+                      "w-full flex items-center gap-2 h-8 rounded-md text-[#9B9CA0] hover:bg-[#1A1C1E] pl-2"
+                    )}
+                    style={{ transition: "opacity 120ms ease-in-out" }}
                   >
-                    <Users className="w-4 h-4 mr-2" />
-                    <span>Members</span>
-                  </DropdownMenuItem>
-                )}
+                    <MoreHorizontal className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                    <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>More</span>
+                  </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent 
+                align="start" 
+                className="min-w-[180px] rounded-lg shadow-lg"
+                style={{
+                  backgroundColor: "#242424",
+                  border: "none",
+                  padding: "4px",
+                }}
+              >
                 {tempVisibleItem !== "teams" && (
                   <DropdownMenuItem
                     onClick={() => {
                       setTempVisibleItem("teams");
                       navigate("/teams");
                     }}
-                    className="py-1 hover:!bg-[#292b30] focus:!bg-[#292b30]"
+                    className="rounded-md px-3 py-2 cursor-pointer"
+                    style={{
+                      color: "#FFFFFF",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#2A2A2A";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
                   >
-                    <UserSquare className="w-4 h-4 mr-2" />
-                    <span>Teams</span>
+                    <UserSquare className="w-4 h-4 mr-3" style={{ color: "#B4B5B8" }} />
+                    <span style={{ fontSize: "14px" }}>Teams</span>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsCustomizeSidebarModalOpen(true)} className="py-1 hover:!bg-[#292b30] focus:!bg-[#292b30]">
-                  <Pencil className="w-4 h-4 mr-2" />
-                  <span>Customize sidebar</span>
+                {tempVisibleItem !== "members" && (
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setTempVisibleItem("members");
+                      navigate("/members");
+                    }}
+                    className="rounded-md px-3 py-2 cursor-pointer"
+                    style={{
+                      color: "#FFFFFF",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#2A2A2A";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    <Users className="w-4 h-4 mr-3" style={{ color: "#B4B5B8" }} />
+                    <span style={{ fontSize: "14px" }}>Members</span>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem 
+                  onClick={() => setIsCustomizeSidebarModalOpen(true)} 
+                  className="rounded-md px-3 py-2 cursor-pointer"
+                  style={{
+                    color: "#FFFFFF",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "#2A2A2A";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  <Pencil className="w-4 h-4 mr-3" style={{ color: "#B4B5B8" }} />
+                  <span style={{ fontSize: "14px" }}>Customize sidebar</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -324,7 +370,15 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
         <div className="mb-3">
           <button
             onClick={() => setTeamsExpanded(!teamsExpanded)}
-            className="w-full px-2 py-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground tracking-wider hover:text-foreground transition-colors mb-1"
+            className="w-full px-2 py-1 flex items-center gap-1.5 mb-1"
+            style={{ 
+              transition: "opacity 120ms ease-in-out",
+              fontSize: "11px", 
+              fontWeight: 500, 
+              textTransform: "uppercase", 
+              letterSpacing: "0.5px",
+              color: "#6F7074"
+            }}
           >
             <span>Your teams</span>
             {teamsExpanded ? (
@@ -337,14 +391,15 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
             <div className="space-y-0">
               <button
                 onClick={() => setTeamExpanded(!teamExpanded)}
-                className="w-full flex items-center gap-2 py-1.5 rounded-md text-sidebar-foreground hover:bg-surface transition-colors pl-[10px]"
+                className="w-full flex items-center gap-2 h-8 rounded-md text-[#9B9CA0] hover:bg-[#1A1C1E] pl-2"
+                style={{ transition: "opacity 120ms ease-in-out" }}
               >
                 <Avatar name="Sst.scaler" size="xs" />
-                <span className="flex-1 text-left">Sst.scaler</span>
+                <span className="flex-1 text-left text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>Sst.scaler</span>
                 {teamExpanded ? (
-                  <SolidChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                  <SolidChevronDown className="w-3.5 h-3.5" style={{ color: "#B4B5B8" }} />
                 ) : (
-                  <SolidChevronRight className="w-3.5 h-3.5 text-muted-foreground" />
+                  <SolidChevronRight className="w-3.5 h-3.5" style={{ color: "#B4B5B8" }} />
                 )}
               </button>
               {teamExpanded && (
@@ -353,43 +408,46 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
                     to="/team/issues"
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-2 py-1.5 rounded-md transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-surface"
+                        "flex items-center gap-2 h-8 rounded-md pl-2",
+                        isActive
+                          ? "bg-[#232527] text-[#FFFFFF]"
+                          : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                       )
                     }
+                    style={{ transition: "opacity 120ms ease-in-out" }}
                   >
-                    <Copy className="w-4 h-4" />
-                    <span>Issues</span>
+                    <Copy className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                    <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>Issues</span>
                   </NavLink>
                   <NavLink
                     to="/team/projects"
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-2 py-1.5 rounded-md transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-surface"
+                        "flex items-center gap-2 h-8 rounded-md pl-2",
+                        isActive
+                          ? "bg-[#232527] text-[#FFFFFF]"
+                          : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                       )
                     }
+                    style={{ transition: "opacity 120ms ease-in-out" }}
                   >
-                    <Box className="w-4 h-4" />
-                    <span>Projects</span>
+                    <Box className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                    <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>Projects</span>
                   </NavLink>
                   <NavLink
                     to="/team/views"
                     className={({ isActive }) =>
                       cn(
-                        "flex items-center gap-2 py-1.5 rounded-md transition-colors",
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-surface"
+                        "flex items-center gap-2 h-8 rounded-md pl-2",
+                        isActive
+                          ? "bg-[#232527] text-[#FFFFFF]"
+                          : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                       )
                     }
+                    style={{ transition: "opacity 120ms ease-in-out" }}
                   >
-                    <Layers2 className="w-4 h-4" />
-                    <span>Views</span>
+                    <Layers2 className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                    <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>Views</span>
                   </NavLink>
                 </div>
               )}
@@ -401,7 +459,15 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
         <div className="mb-3">
           <button
             onClick={() => setTryExpanded(!tryExpanded)}
-            className="w-full px-2 py-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground tracking-wider hover:text-foreground transition-colors mb-1"
+            className="w-full px-2 py-1 flex items-center gap-1.5 mb-1"
+            style={{ 
+              transition: "opacity 120ms ease-in-out",
+              fontSize: "11px", 
+              fontWeight: 500, 
+              textTransform: "uppercase", 
+              letterSpacing: "0.5px",
+              color: "#6F7074"
+            }}
           >
             <span>Try</span>
             {tryExpanded ? (
@@ -420,11 +486,12 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
                     key={item.name}
                     onClick={() => setIsInvitePeopleModalOpen(true)}
                     className={cn(
-                      "w-full flex items-center gap-2 py-1.5 rounded-md transition-colors text-sidebar-foreground hover:bg-surface pl-[10px]"
+                      "w-full flex items-center gap-2 h-8 rounded-md text-[#9B9CA0] hover:bg-[#1A1C1E] pl-2"
                     )}
+                    style={{ transition: "opacity 120ms ease-in-out" }}
                   >
-                    <item.icon className="w-4 h-4" />
-                    <span>{item.name}</span>
+                    <item.icon className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                    <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>{item.name}</span>
                   </button>
                 );
               }
@@ -436,15 +503,16 @@ export const Sidebar = ({ onCommandClick }: SidebarProps) => {
                   to={item.href}
                   className={({ isActive }) =>
                     cn(
-                      "flex items-center gap-2 py-1.5 rounded-md transition-colors pl-[10px]",
+                      "flex items-center gap-2 h-8 rounded-md pl-2",
                       isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-surface"
+                        ? "bg-[#232527] text-[#FFFFFF]"
+                        : "text-[#9B9CA0] hover:bg-[#1A1C1E]"
                     )
                   }
+                  style={{ transition: "opacity 120ms ease-in-out" }}
                 >
-                  <item.icon className="w-4 h-4" />
-                  <span>{item.name}</span>
+                  <item.icon className="w-4 h-4" style={{ color: "#B4B5B8" }} />
+                  <span className="text-sm font-medium" style={{ fontSize: "14px", fontWeight: 500 }}>{item.name}</span>
                 </NavLink>
               );
             })}

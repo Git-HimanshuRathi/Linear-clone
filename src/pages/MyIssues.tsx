@@ -26,6 +26,15 @@ const tabs = [
   { name: "Activity", href: "/my-issues/activity" },
 ];
 
+// Custom Filter icon matching Linear design - funnel shape with decreasing widths, left-aligned
+const FilterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <line x1="2" y1="5" x2="12" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="8" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="11" x2="7" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
 // Dashed circle icon component (hollow - just border with gap)
 const DashedCircle = ({ className }: { className?: string }) => (
   <svg
@@ -348,25 +357,41 @@ const MyIssues = () => {
       </div>
 
       {/* Filter and Display buttons */}
-      <div className="border-b border-border flex items-center justify-between px-5 py-2">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 text-muted-foreground hover:text-foreground px-2"
+      <div className="border-b flex items-center justify-between px-5 py-2" style={{ borderColor: "#1A1C1E" }}>
+        <button
+          className="flex items-center gap-1.5 h-7 px-2 rounded-md transition-colors"
+          style={{
+            background: "transparent",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#1A1C1E";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+          }}
         >
-          <Filter className="w-3.5 h-3.5" />
+          <FilterIcon className="w-3.5 h-3.5" />
           <span className="text-xs">Filter</span>
-        </Button>
+        </button>
         <DropdownMenu open={displayMenuOpen} onOpenChange={setDisplayMenuOpen}>
           <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 bg-surface hover:bg-surface-hover text-foreground rounded-md px-2.5"
+        <button
+          className="flex items-center gap-1.5 h-7 px-2.5 rounded-md transition-colors"
+          style={{
+            background: "#232527",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#2B2D2F";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#232527";
+          }}
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span className="text-xs">Display</span>
-        </Button>
+        </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-72 p-0">
             <div className="px-3 py-2 border-b border-border">
@@ -380,6 +405,16 @@ const MyIssues = () => {
                     viewType === "list" ? "bg-muted/50 border-muted" : ""
                   )}
                   onClick={() => setViewType("list")}
+                  onMouseEnter={(e) => {
+                    if (viewType !== "list") {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (viewType !== "list") {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   <List className="w-3.5 h-3.5 mr-1.5" />
                   List
@@ -392,6 +427,16 @@ const MyIssues = () => {
                     viewType === "board" ? "bg-muted/50 border-muted" : ""
                   )}
                   onClick={() => setViewType("board")}
+                  onMouseEnter={(e) => {
+                    if (viewType !== "board") {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (viewType !== "board") {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   <Columns className="w-3.5 h-3.5 mr-1.5" />
                   Board
@@ -407,7 +452,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Columns</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {columns}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -429,7 +484,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Rows</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {grouping}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -452,7 +517,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Ordering</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {ordering}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -482,7 +557,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Completed issues</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {completedIssues}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -619,7 +704,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Grouping</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {grouping}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -637,7 +732,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Ordering</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {ordering}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -654,7 +759,17 @@ const MyIssues = () => {
                     <label className="text-xs font-medium text-muted-foreground w-[120px] flex-shrink-0">Completed issues</label>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-7 text-xs gap-1.5 px-2 border-border hover:bg-muted/50 w-[133px] justify-center"
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#1A1C1E";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "";
+                          }}
+                        >
                           {completedIssues}
                           <ChevronDown className="h-3 w-3" />
                         </Button>
@@ -693,6 +808,16 @@ const MyIssues = () => {
                     displayProperties.id ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, id: !prev.id }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.id) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.id) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   ID
                 </Button>
@@ -704,6 +829,16 @@ const MyIssues = () => {
                     displayProperties.status ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, status: !prev.status }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.status) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.status) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Status
                 </Button>
@@ -715,6 +850,16 @@ const MyIssues = () => {
                     displayProperties.assignee ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, assignee: !prev.assignee }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.assignee) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.assignee) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Assignee
                 </Button>
@@ -726,6 +871,16 @@ const MyIssues = () => {
                     displayProperties.priority ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, priority: !prev.priority }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.priority) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.priority) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Priority
                 </Button>
@@ -740,6 +895,16 @@ const MyIssues = () => {
                     displayProperties.dueDate ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, dueDate: !prev.dueDate }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.dueDate) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.dueDate) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Due date
                 </Button>
@@ -751,6 +916,16 @@ const MyIssues = () => {
                     displayProperties.project ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, project: !prev.project }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.project) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.project) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Project
                 </Button>
@@ -762,6 +937,16 @@ const MyIssues = () => {
                     displayProperties.milestone ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, milestone: !prev.milestone }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.milestone) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.milestone) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Milestone
                 </Button>
@@ -776,6 +961,16 @@ const MyIssues = () => {
                     displayProperties.cycle ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, cycle: !prev.cycle }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.cycle) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.cycle) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Cycle
                 </Button>
@@ -787,6 +982,16 @@ const MyIssues = () => {
                     displayProperties.labels ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, labels: !prev.labels }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.labels) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.labels) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Label
                 </Button>
@@ -798,6 +1003,16 @@ const MyIssues = () => {
                     displayProperties.links ? "!bg-muted/50 border-border" : ""
                   )}
                   onClick={() => setDisplayProperties(prev => ({ ...prev, links: !prev.links }))}
+                  onMouseEnter={(e) => {
+                    if (!displayProperties.links) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!displayProperties.links) {
+                      e.currentTarget.style.background = "";
+                    }
+                  }}
                 >
                   Link
                 </Button>
@@ -826,7 +1041,16 @@ const MyIssues = () => {
               <p className="text-sm font-medium text-foreground">Failed to load issues</p>
               <p className="text-xs text-muted-foreground">{error?.message || "Unknown error occurred"}</p>
             </div>
-            <Button variant="outline" onClick={() => refetch()}>
+            <Button 
+              variant="outline" 
+              onClick={() => refetch()}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "#1A1C1E";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "";
+              }}
+            >
               Retry
             </Button>
           </div>

@@ -8,27 +8,27 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Linear-inspired dark theme */
-    --background: 0 0% 5%;
-    --foreground: 0 0% 95%;
+    /* Linear's exact dark theme */
+    --background: 210 9% 7%; /* #111214 */
+    --foreground: 0 0% 100%; /* #FFFFFF */
 
-    --surface: 0 0% 8%;
-    --surface-hover: 0 0% 12%;
+    --surface: 210 9% 7%; /* #111214 */
+    --surface-hover: 210 8% 11%; /* #1A1C1E */
 
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
+    --card: 210 9% 7%;
+    --card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 210 9% 7%;
+    --popover-foreground: 0 0% 100%;
 
-    --primary: 243 75% 59%;
+    --primary: 243 75% 59%; /* #6366F1 */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 95%;
+    --secondary: 210 8% 15%; /* #232527 */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
+    --muted: 210 8% 11%; /* #1A1C1E */
+    --muted-foreground: 0 0% 44%; /* #6F7074 */
 
     --accent: 243 75% 59%;
     --accent-foreground: 0 0% 100%;
@@ -36,21 +36,21 @@ All colors MUST be HSL.
     --destructive: 0 63% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
+    --border: 210 8% 11%; /* #1A1C1E */
+    --input: 210 8% 11%;
     --ring: 243 75% 59%;
 
-    --text-primary: 0 0% 95%;
-    --text-secondary: 0 0% 70%;
-    --text-tertiary: 0 0% 50%;
+    --text-primary: 0 0% 100%; /* #FFFFFF */
+    --text-secondary: 0 0% 62%; /* #9B9CA0 */
+    --text-tertiary: 0 0% 44%; /* #6F7074 */
 
-    --sidebar-background: 0 0% 5%;
-    --sidebar-foreground: 0 0% 80%;
-    --sidebar-primary: 243 75% 59%;
+    --sidebar-background: 0 0% 4%; /* #0B0B0D */
+    --sidebar-foreground: 0 0% 62%; /* #9B9CA0 */
+    --sidebar-primary: 243 75% 59%; /* #6366F1 */
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 12%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 0 0% 12%;
+    --sidebar-accent: 210 8% 15%; /* #232527 */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 210 8% 11%; /* #1A1C1E */
     --sidebar-ring: 243 75% 59%;
 
     --radius: 6px;

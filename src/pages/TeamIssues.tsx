@@ -7,7 +7,15 @@ import { Issue } from "@/components/NewIssueModal";
 import { Avatar } from "@/components/Avatar";
 import { useIssues } from "@/hooks/useJiraIssues";
 
-// Custom icons matching Linear design
+// Custom Filter icon matching Linear design - funnel shape with decreasing widths, left-aligned
+const FilterIcon = ({ className }: { className?: string }) => (
+  <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <line x1="2" y1="5" x2="12" y2="5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="8" x2="9" y2="8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="2" y1="11" x2="7" y2="11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+  </svg>
+);
+
 const StackedSquaresIcon = ({ className }: { className?: string }) => (
   <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none">
     {/* Back square */}
@@ -145,9 +153,9 @@ const TeamIssues = () => {
     : ["Backlog", "Todo", "In Progress", "Done", "Cancelled"];
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full flex flex-col bg-[#0D0F10]">
       {/* Top Navigation Tabs */}
-      <div className="border-b border-border px-6 py-0">
+      <div className="border-b px-6 py-0" style={{ borderColor: "#1A1C1E" }}>
         <div className="flex items-center justify-between">
           <nav className="flex items-center gap-1">
             {tabs.map((tab) => {
@@ -163,44 +171,93 @@ const TeamIssues = () => {
                   key={tab.name}
                   to={tab.href}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-3 text-sm font-medium rounded-t-md transition-colors",
+                    "flex items-center gap-2.5 h-8 rounded-lg transition-all duration-150 ease",
                     isActive
-                      ? "text-foreground bg-surface"
-                      : "text-muted-foreground hover:text-foreground hover:bg-surface/30"
+                      ? "" // Active styles via inline
+                      : "" // Inactive styles via inline
                   )}
+                  style={{
+                    padding: "0 10px",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    height: "32px",
+                    borderRadius: "8px",
+                    boxShadow: "0 1px 2px rgba(0,0,0,0.35)",
+                    ...(isActive
+                      ? {
+                          background: "#232527",
+                          color: "#EDEDED",
+                          border: "1px solid #404245",
+                        }
+                      : {
+                          background: "transparent",
+                          color: "#A0A0A0",
+                          border: "1px solid transparent",
+                        }),
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = "#1A1C1E";
+                      e.currentTarget.style.borderColor = "#2B2D2F";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.background = "transparent";
+                      e.currentTarget.style.borderColor = "transparent";
+                    }
+                  }}
                 >
-                  <IconComponent className="w-4 h-4" />
-                  {tab.name}
+                  <div style={{ color: isActive ? "#EDEDED" : "#A0A0A0" }}>
+                    <IconComponent className="w-4 h-4" />
+                  </div>
+                  <span>{tab.name}</span>
                 </NavLink>
               );
             })}
           </nav>
 
           {/* Right side icon - Stacked squares with plus */}
-          <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+          <button className="transition-colors p-1" style={{ color: "#A0A0A0" }} onMouseEnter={(e) => e.currentTarget.style.color = "#EDEDED"} onMouseLeave={(e) => e.currentTarget.style.color = "#A0A0A0"}>
             <StackedSquaresPlusIcon className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 
       {/* Filter and Display controls */}
-      <div className="border-b border-border flex items-center justify-between px-6 py-2.5">
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 text-muted-foreground hover:text-foreground px-2"
+      <div className="border-b flex items-center justify-between px-6 py-2.5" style={{ borderColor: "#1A1C1E" }}>
+        <button
+          className="flex items-center gap-1.5 h-7 px-2 rounded-md transition-colors"
+          style={{
+            background: "transparent",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#1A1C1E";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+          }}
         >
-          <Filter className="w-3.5 h-3.5" />
+          <FilterIcon className="w-3.5 h-3.5" />
           <span className="text-xs">Filter</span>
-        </Button>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1.5 h-7 bg-surface hover:bg-surface-hover text-foreground rounded-md px-2.5"
+        </button>
+        <button
+          className="flex items-center gap-1.5 h-7 px-2.5 rounded-md transition-colors"
+          style={{
+            background: "#232527",
+            color: "#EDEDED",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "#2B2D2F";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "#232527";
+          }}
         >
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span className="text-xs">Display</span>
-        </Button>
+        </button>
       </div>
 
       {/* Loading State */}
@@ -246,8 +303,8 @@ const TeamIssues = () => {
                     ) : (
                       <Circle className="w-3.5 h-3.5 text-muted-foreground" />
                     )}
-                    <span className="text-sm font-medium text-foreground">{status}</span>
-                    <span className="text-xs text-muted-foreground">{statusIssues.length}</span>
+                    <span className="text-sm font-medium" style={{ color: "#EDEDED" }}>{status}</span>
+                    <span className="text-xs" style={{ color: "#6F6F6F" }}>{statusIssues.length}</span>
                   </div>
                   <Button
                     variant="ghost"
@@ -259,7 +316,7 @@ const TeamIssues = () => {
                 </div>
 
                 {/* Issues list */}
-                <div className="space-y-0.5">
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   {statusIssues.map((issue) => (
                     <div
                       key={issue.id}
@@ -269,17 +326,17 @@ const TeamIssues = () => {
                       {getPriorityIcon(issue.priority)}
                       
                       {/* Issue ID */}
-                      <span className="text-sm font-mono text-muted-foreground min-w-[50px]">
+                      <span className="text-sm font-mono min-w-[50px]" style={{ color: "#6F6F6F" }}>
                         {issue.issueNumber}
                       </span>
                       
                       {/* Title */}
-                      <span className="text-sm text-foreground flex-1">{issue.title}</span>
+                      <span className="text-sm flex-1" style={{ color: "#EDEDED" }}>{issue.title}</span>
                       
                       {/* Assignee */}
                       <div className="flex items-center gap-2">
                         {getAssigneeDisplay(issue.assignee, currentUser)}
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-xs" style={{ color: "#6F6F6F" }}>
                           {formatDate(issue.createdAt)}
                         </span>
                       </div>
