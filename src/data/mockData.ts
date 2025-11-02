@@ -365,23 +365,40 @@ export interface Project {
   id: string;
   name: string;
   description: string;
+  subtitle?: string;
   color: string;
   icon: string;
   issueCount: number;
   completedIssueCount: number;
   status: "active" | "archived" | "completed";
+  health?: "On track" | "At risk" | "Off track";
+  healthHours?: string;
+  priority?: number;
+  lead?: {
+    name: string;
+    avatar?: string;
+  };
+  targetDate?: string;
 }
 
 export const initialProjects: Project[] = [
   {
     id: "p1",
-    name: "LLM Chatbot",
-    description: "AI-powered chatbot integration for customer support",
+    name: "Create Linear Clone-Hackathon",
+    description: "Basic UI Creation Nov 2",
+    subtitle: "Basic UI Creation Nov 2",
     color: "#5E6AD2",
     icon: "🤖",
     issueCount: 24,
     completedIssueCount: 18,
     status: "active",
+    health: "On track",
+    healthHours: "20h",
+    priority: 2,
+    lead: {
+      name: "Aadit Dhariwal",
+    },
+    targetDate: "2025-01-15",
   },
   {
     id: "p2",
@@ -392,6 +409,13 @@ export const initialProjects: Project[] = [
     issueCount: 42,
     completedIssueCount: 35,
     status: "active",
+    health: "On track",
+    healthHours: "15h",
+    priority: 1,
+    lead: {
+      name: "Aadit Dhariwal",
+    },
+    targetDate: "2025-02-01",
   },
   {
     id: "p3",
@@ -402,6 +426,13 @@ export const initialProjects: Project[] = [
     issueCount: 31,
     completedIssueCount: 28,
     status: "active",
+    health: "At risk",
+    healthHours: "8h",
+    priority: 3,
+    lead: {
+      name: "Aadit Dhariwal",
+    },
+    targetDate: "2025-01-20",
   },
   {
     id: "p4",
@@ -412,6 +443,13 @@ export const initialProjects: Project[] = [
     issueCount: 15,
     completedIssueCount: 12,
     status: "active",
+    health: "On track",
+    healthHours: "12h",
+    priority: 2,
+    lead: {
+      name: "Aadit Dhariwal",
+    },
+    targetDate: "2025-01-25",
   },
 ];
 

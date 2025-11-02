@@ -16,6 +16,9 @@ import InvitePeople from "./pages/InvitePeople";
 import LinkGitHub from "./pages/LinkGitHub";
 import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
+import Login from "./pages/Login";
+import TeamsPage from "./pages/TeamsPage";
+import Members from "./pages/Members";
 import TeamIssues from "./pages/TeamIssues";
 import Welcome from "./pages/onboarding/Welcome";
 import ThemeSelection from "./pages/onboarding/ThemeSelection";
@@ -45,6 +48,9 @@ const AppRoutes = () => {
       {/* Landing Page - Public */}
       <Route path="/" element={<Landing />} />
       
+      {/* Auth Routes */}
+      <Route path="/login" element={<Login />} />
+      
       {/* Onboarding Routes */}
       <Route path="/onboarding/welcome" element={<Welcome />} />
       <Route path="/onboarding/theme" element={<ThemeSelection />} />
@@ -63,11 +69,13 @@ const AppRoutes = () => {
         <Route path="/my-issues/:tab" element={<MyIssues />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/views" element={<Views />} />
+        <Route path="/teams/*" element={<TeamsPage />} />
+        <Route path="/members" element={<Members />} />
         <Route path="/more" element={<More />} />
         <Route path="/team/issues" element={<TeamIssues />} />
         <Route path="/team/issues/active" element={<TeamIssues />} />
         <Route path="/team/issues/backlog" element={<TeamIssues />} />
-        <Route path="/team/projects" element={<Dashboard />} />
+        <Route path="/team/projects" element={<Projects />} />
         <Route path="/team/views" element={<Dashboard />} />
         <Route path="/import" element={<ImportIssues />} />
         <Route path="/invite" element={<InvitePeople />} />

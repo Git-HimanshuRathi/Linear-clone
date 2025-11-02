@@ -9,11 +9,11 @@ const InviteCoWorkers = () => {
   const [emails, setEmails] = useState("");
 
   const handleContinue = () => {
-    navigate("/onboarding/command-menu");
+    navigate("/onboarding/subscribe");
   };
 
   const handleLater = () => {
-    navigate("/onboarding/command-menu");
+    navigate("/onboarding/subscribe");
   };
 
   return (
