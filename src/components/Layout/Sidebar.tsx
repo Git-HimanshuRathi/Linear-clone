@@ -42,8 +42,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useOnboarding } from "@/contexts/OnboardingContext";
 
-// Dashed square icon for "My issues"
-const DashedSquare = ({ className }: { className?: string }) => (
+// Focus/Target icon for "My issues" - central dot with four L-shaped brackets
+const FocusIcon = ({ className }: { className?: string }) => (
   <svg
     className={className}
     width="16"
@@ -52,16 +52,20 @@ const DashedSquare = ({ className }: { className?: string }) => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect
-      x="2"
-      y="2"
-      width="12"
-      height="12"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeDasharray="2 2"
-      fill="none"
-    />
+    {/* Central dot */}
+    <circle cx="8" cy="8" r="1.5" fill="currentColor" />
+    {/* Top-left L bracket */}
+    <line x1="3" y1="3" x2="3" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="3" y1="3" x2="5.5" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    {/* Top-right L bracket */}
+    <line x1="13" y1="3" x2="13" y2="5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="13" y1="3" x2="10.5" y2="3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    {/* Bottom-left L bracket */}
+    <line x1="3" y1="13" x2="3" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="3" y1="13" x2="5.5" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    {/* Bottom-right L bracket */}
+    <line x1="13" y1="13" x2="13" y2="10.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <line x1="13" y1="13" x2="10.5" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
   </svg>
 );
 
@@ -94,7 +98,7 @@ const SolidChevronRight = ({ className }: { className?: string }) => (
 
 const mainNav = [
   { name: "Inbox", href: "/inbox", icon: Inbox },
-  { name: "My issues", href: "/my-issues", icon: DashedSquare },
+  { name: "My issues", href: "/my-issues", icon: FocusIcon },
 ];
 
 const allWorkspaceItems = [
