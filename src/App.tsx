@@ -46,7 +46,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isCompleted } = useOnboarding();
   
   if (!isCompleted) {
-    return <Navigate to="/onboarding/welcome" replace />;
+    return <Navigate to="/" replace />;
   }
   
   return <>{children}</>;
