@@ -14,14 +14,6 @@ import {
   Send,
   ChevronDown,
   ChevronUp,
-  AlertCircle,
-  BarChart3,
-  BarChart2,
-  BarChart,
-  CheckSquare,
-  PlayCircle,
-  CheckCircle2,
-  XCircle,
   Tag,
   Box,
   Check,
@@ -52,65 +44,32 @@ import { Avatar } from "@/components/Avatar";
 import { CommentsSection, Comment } from "@/components/CommentsSection";
 import { db } from "@/db/database";
 
-// Dashed circle icon component (hollow - just border with gap)
-const DashedCircle = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle
-      cx="7"
-      cy="7"
-      r="6"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeDasharray="2 2"
-      fill="none"
-    />
-  </svg>
-);
-
-// Orange circle icon component (hollow - just border with gap)
-const OrangeCircle = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle
-      cx="7"
-      cy="7"
-      r="6"
-      stroke="#F59E0B"
-      strokeWidth="1.5"
-      fill="none"
-      strokeDasharray="8 3"
-      strokeDashoffset="2"
-    />
-  </svg>
-);
+import BacklogIcon from "@/components/icons/BacklogIcon";
+import TodoIcon from "@/components/icons/TodoIcon";
+import InProgressIcon from "@/components/icons/InProgressIcon";
+import DoneIcon from "@/components/icons/DoneIcon";
+import CanceledIcon from "@/components/icons/CanceledIcon";
+import DuplicateIcon from "@/components/icons/DuplicateIcon";
+import UrgentIcon from "@/components/icons/UrgentIcon";
+import PriorityHighIcon from "@/components/icons/PriorityHighIcon";
+import PriorityMediumIcon from "@/components/icons/PriorityMediumIcon";
+import PriorityLowIcon from "@/components/icons/PriorityLowIcon";
 
 const defaultPriorityOptions = [
-  { value: "No priority", icon: "0", color: "text-muted-foreground", number: 0 },
-  { value: "Urgent", icon: AlertCircle, color: "text-red-500", number: 1 },
-  { value: "High", icon: BarChart3, color: "text-orange-500", number: 2 },
-  { value: "Medium", icon: BarChart2, color: "text-yellow-500", number: 3 },
-  { value: "Low", icon: BarChart, color: "text-blue-500", number: 4 },
+  { value: "No priority", icon: "---", color: "text-muted-foreground", number: 0 },
+  { value: "Urgent", icon: UrgentIcon, color: "text-muted-foreground", number: 1 },
+  { value: "High", icon: PriorityHighIcon, color: "text-muted-foreground", number: 2 },
+  { value: "Medium", icon: PriorityMediumIcon, color: "text-muted-foreground", number: 3 },
+  { value: "Low", icon: PriorityLowIcon, color: "text-muted-foreground", number: 4 },
 ];
 
 const defaultStatusOptions = [
-  { value: "Backlog", icon: OrangeCircle, color: "text-orange-500" },
-  { value: "Todo", icon: DashedCircle, color: "text-muted-foreground" },
-  { value: "In Progress", icon: PlayCircle, color: "text-yellow-500" },
-  { value: "Done", icon: CheckCircle2, color: "text-primary" },
-  { value: "Cancelled", icon: XCircle, color: "text-red-500" },
+  { value: "Backlog", icon: BacklogIcon, color: "text-muted-foreground" },
+  { value: "Todo", icon: TodoIcon, color: "text-muted-foreground" },
+  { value: "In Progress", icon: InProgressIcon, color: "text-yellow-500" },
+  { value: "Done", icon: DoneIcon, color: "text-purple-500" },
+  { value: "Cancelled", icon: CanceledIcon, color: "text-red-500" },
+  { value: "Duplicate", icon: DuplicateIcon, color: "text-muted-foreground" },
 ];
 
 const defaultLabelsWithColors = [
@@ -495,17 +454,7 @@ const IssueDetail = () => {
                   </div>
                 )}
                 
-                {/* Status changes */}
-                {issue.updatedAt && issue.updatedAt !== issue.createdAt && (
-                  <div className="flex items-start gap-2 text-base animate-in fade-in slide-in-from-bottom-2">
-                    <CheckCircle2 className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="text-foreground">{issue.assignee || currentUser}</span>{" "}
-                      <span className="text-muted-foreground">updated the issue</span>
-                      <span className="text-muted-foreground"> · {formatDate(issue.updatedAt)}</span>
-                    </div>
-                  </div>
-                )}
+                {/* Status changes - hidden if updatedAt not tracked */}
               </div>
             </div>
 
@@ -535,8 +484,8 @@ const IssueDetail = () => {
                     <button className="text-sm text-foreground hover:text-foreground flex items-center gap-2 w-full justify-start">
                       {(() => {
                         const statusOption = getAllStatuses().find(s => s.value === issue.status);
-                        const StatusIcon = statusOption?.icon || OrangeCircle;
-                        return <StatusIcon className={cn("h-3.5 w-3.5", statusOption?.color || "text-orange-500")} />;
+                        const StatusIcon = statusOption?.icon || BacklogIcon;
+                        return <StatusIcon className={cn("h-3.5 w-3.5", statusOption?.color || "text-muted-foreground")} />;
                       })()}
                       {issue.status || "Backlog"}
                     </button>

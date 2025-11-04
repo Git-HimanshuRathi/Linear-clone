@@ -114,42 +114,22 @@ export const useIssues = (options: UseJiraIssuesOptions = {}) => {
     };
   }
 
-  // Only enable API call if database is empty and API is enabled
-  const shouldFetch = options.enabled && !hasLocalData && isReady;
+  // Always fetch from API when enabled (ignore local DB presence)
+  const shouldFetch = options.enabled && isReady;
   
   const jiraQuery = useJiraIssues({
     ...options,
     enabled: shouldFetch,
   });
 
-  // Store API data in SQLite when it arrives (only if database was empty)
+  // Do not persist API results into SQLite; always use fresh API data when available
   useEffect(() => {
-    if (isReady && jiraQuery.data && jiraQuery.data.length > 0 && !hasLocalData && options.enabled) {
-      try {
-        jiraQuery.data.forEach((issue: Issue) => {
-          db.insertIssue(issue);
-        });
-        setLocalIssues(jiraQuery.data);
-        setHasLocalData(true);
-      } catch (error) {
-        console.error('Error saving issues to database:', error);
-      }
-    }
-  }, [jiraQuery.data, hasLocalData, options.enabled, isReady]);
+    // intentionally no-op to avoid overwriting local DB with API subsets
+  }, [jiraQuery.data]);
 
-  // Always prioritize local issues and merge with JIRA issues if they exist
-  // Merge JIRA issues with local issues (avoid duplicates by ID)
+  // Prefer API data; fall back to local issues if API unavailable
   const jiraIssues = jiraQuery.data || [];
-  
-  // Create a map of JIRA issue IDs to avoid duplicates
-  const jiraIssueIds = new Set(jiraIssues.map(issue => issue.id));
-  
-  // Always include all local issues (user-created issues should always appear)
-  // Only include JIRA issues that don't have a corresponding local issue
-  const uniqueJiraIssues = jiraIssues.filter(issue => !localIssues.some(li => li.id === issue.id));
-  
-  // Merge: local issues first (priority), then unique JIRA issues
-  const mergedIssues = [...localIssues, ...uniqueJiraIssues];
+  const mergedIssues = jiraIssues.length > 0 ? jiraIssues : localIssues;
 
   return {
     ...jiraQuery,
@@ -157,8 +137,8 @@ export const useIssues = (options: UseJiraIssuesOptions = {}) => {
     localIssues,
     jiraIssues,
     isLoading: !isReady || (shouldFetch && jiraQuery.isLoading),
-    isError: jiraQuery.isError && !hasLocalData, // Only show error if no local data
-    error: hasLocalData ? null : jiraQuery.error,
+    isError: jiraQuery.isError && mergedIssues.length === 0,
+    error: mergedIssues.length > 0 ? null : jiraQuery.error,
   };
 };
 

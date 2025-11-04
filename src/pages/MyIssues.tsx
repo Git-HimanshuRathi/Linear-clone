@@ -1,10 +1,21 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, useParams, useLocation, useNavigate } from "react-router-dom";
-import { Filter, SlidersHorizontal, CircleDot, ChevronDown, LayoutGrid, Loader2, Minus, Circle, AlertCircle, MoreHorizontal, BarChart3, BarChart2, BarChart, CheckSquare, PlayCircle, CheckCircle2, XCircle, Check, List, Columns, ArrowUp, ArrowDown } from "lucide-react";
+import { Filter, SlidersHorizontal, CircleDot, ChevronDown, LayoutGrid, Loader2, Minus, Circle, MoreHorizontal, CheckSquare, PlayCircle, CheckCircle2, XCircle, Check, List, Columns, ArrowUp, ArrowDown, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { NewIssueModal, Issue } from "@/components/NewIssueModal";
+import BacklogIcon from "@/components/icons/BacklogIcon";
+import UrgentIcon from "@/components/icons/UrgentIcon";
+import PriorityHighIcon from "@/components/icons/PriorityHighIcon";
+import PriorityMediumIcon from "@/components/icons/PriorityMediumIcon";
+import PriorityLowIcon from "@/components/icons/PriorityLowIcon";
+import TodoIcon from "@/components/icons/TodoIcon";
+import InProgressIcon from "@/components/icons/InProgressIcon";
+import DoneIcon from "@/components/icons/DoneIcon";
+import CanceledIcon from "@/components/icons/CanceledIcon";
+import DuplicateIcon from "@/components/icons/DuplicateIcon";
 import { Avatar } from "@/components/Avatar";
 import { useIssues } from "@/hooks/useJiraIssues";
 import { db } from "@/db/database";
@@ -82,19 +93,20 @@ const OrangeCircle = ({ className }: { className?: string }) => (
 );
 
 const defaultPriorityOptions = [
-  { value: "No priority", icon: "0", color: "text-muted-foreground", number: 0 },
-  { value: "Urgent", icon: AlertCircle, color: "text-red-500", number: 1 },
-  { value: "High", icon: BarChart3, color: "text-orange-500", number: 2 },
-  { value: "Medium", icon: BarChart2, color: "text-yellow-500", number: 3 },
-  { value: "Low", icon: BarChart, color: "text-blue-500", number: 4 },
+  { value: "No priority", icon: "---", color: "text-muted-foreground", number: 0 },
+  { value: "Urgent", icon: UrgentIcon, color: "text-muted-foreground", number: 1 },
+  { value: "High", icon: PriorityHighIcon, color: "text-muted-foreground", number: 2 },
+  { value: "Medium", icon: PriorityMediumIcon, color: "text-muted-foreground", number: 3 },
+  { value: "Low", icon: PriorityLowIcon, color: "text-muted-foreground", number: 4 },
 ];
 
 const defaultStatusOptions = [
-  { value: "Backlog", icon: OrangeCircle, color: "text-orange-500" },
-  { value: "Todo", icon: DashedCircle, color: "text-muted-foreground" },
-  { value: "In Progress", icon: PlayCircle, color: "text-yellow-500" },
-  { value: "Done", icon: CheckCircle2, color: "text-muted-foreground" },
-  { value: "Cancelled", icon: XCircle, color: "text-red-500" },
+  { value: "Backlog", icon: BacklogIcon, color: "text-muted-foreground" },
+  { value: "Todo", icon: TodoIcon, color: "text-muted-foreground" },
+  { value: "In Progress", icon: InProgressIcon, color: "text-yellow-500" },
+  { value: "Done", icon: DoneIcon, color: "text-purple-500" },
+  { value: "Cancelled", icon: CanceledIcon, color: "text-red-500" },
+  { value: "Duplicate", icon: DuplicateIcon, color: "text-muted-foreground" },
 ];
 
 const MyIssues = () => {
@@ -365,7 +377,7 @@ const MyIssues = () => {
       {/* Tabs */}
       <div className="border-b border-border px-3 md:px-5" style={{ paddingTop: "8px", paddingBottom: "8px" }}>
         <div className="flex items-center justify-between gap-2">
-          <nav className="flex items-center gap-1 overflow-x-auto flex-shrink-0">
+          <nav className="flex items-center gap-1.5 overflow-x-auto flex-shrink-0">
             {tabs.map((tab) => {
               if (tab.name === "My issues") {
                 return (
@@ -378,21 +390,33 @@ const MyIssues = () => {
                 );
               }
               return (
-              <NavLink
-                key={tab.name}
-                to={tab.href}
-                end
-                className={({ isActive }) =>
-                  cn(
-                      "px-2.5 py-1.5 text-xs font-medium transition-colors rounded-md border outline-none focus:outline-none focus:ring-0",
-                    isActive
-                        ? "bg-surface text-foreground border-border"
-                        : "text-foreground bg-transparent border-border hover:bg-surface/70"
-                  )
-                }
-              >
-                {tab.name}
-              </NavLink>
+                <TooltipProvider key={tab.name}>
+                  <Tooltip delayDuration={150}>
+                    <TooltipTrigger asChild>
+                      <NavLink
+                        to={tab.href}
+                        end
+                        className={({ isActive }) =>
+                          cn(
+                            // compact font but longer padding so text doesn't touch borders
+                            "px-3.5 py-1.5 text-xs font-medium",
+                            // shape
+                            "rounded-md border outline-none focus:outline-none focus:ring-0",
+                            // colors (no padding change on hover to avoid squish)
+                            isActive
+                              ? "bg-surface text-foreground border-border"
+                              : "text-foreground bg-transparent border-border hover:bg-surface/70"
+                          )
+                        }
+                      >
+                        {tab.name}
+                      </NavLink>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" align="start">
+                      <span className="text-xs">{`Open ${tab.name.toLowerCase()}`}</span>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               );
             })}
           </nav>
@@ -1172,7 +1196,7 @@ const MyIssues = () => {
                             
                             {/* Priority, Status icons */}
                             <div className="flex items-center gap-2 ml-[calc(0.875rem+0.5rem)] mt-1.5">
-                              <div className="flex items-center gap-2.5">
+                              <div className="flex items-center gap-2">
                                 {/* Priority dropdown */}
                                 <DropdownMenu
                                   open={openPriorityDropdown === issue.id}
@@ -1185,15 +1209,17 @@ const MyIssues = () => {
                                       onClick={(e) => e.stopPropagation()}
                                       className="flex items-center border-0 bg-transparent p-0 rounded focus:outline-none"
                                     >
-                                      {priorityOption && priorityOption.value !== "No priority" ? (
-                                        typeof priorityOption.icon === "string" ? (
-                                          <span className={cn("text-xs", priorityOption.color)}>{priorityOption.icon}</span>
+                                      <span className="w-5 flex justify-center">
+                                        {priorityOption && priorityOption.value !== "No priority" ? (
+                                          typeof priorityOption.icon === "string" ? (
+                                            <span className={cn("text-xs", priorityOption.color)}>{priorityOption.icon}</span>
+                                          ) : (
+                                            <priorityOption.icon className={cn("h-4 w-4 flex-shrink-0", priorityOption.color)} />
+                                          )
                                         ) : (
-                                          <priorityOption.icon className={cn("h-3 w-3", priorityOption.color)} />
-                                        )
-                                      ) : (
-                                        <MoreHorizontal className="h-3 w-3 text-muted-foreground" />
-                                      )}
+                                          <MoreHorizontal className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                        )}
+                                      </span>
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="start" className="w-[200px]">
@@ -1212,7 +1238,7 @@ const MyIssues = () => {
                                           {typeof option.icon === "string" ? (
                                             <span className={cn("text-xs", option.color)}>{option.icon}</span>
                                           ) : IconComponent ? (
-                                            <IconComponent className={cn("h-3 w-3", option.color)} />
+                                            <IconComponent className={cn("h-4 w-4", option.color)} />
                                           ) : null}
                                           <span className="flex-1">{option.value}</span>
                                           {isSelected && <Check className="h-3 w-3" />}
@@ -1234,12 +1260,14 @@ const MyIssues = () => {
                                       onClick={(e) => e.stopPropagation()}
                                       className="flex items-center border-0 bg-transparent p-0 rounded focus:outline-none"
                                     >
-                                      {(() => {
-                                        const currentStatus = getStatusForIssue(issue);
-                                        const statusOpt = defaultStatusOptions.find(s => s.value === currentStatus);
-                                        const StatusIconComponent = statusOpt?.icon || DashedCircle;
-                                        return <StatusIconComponent className={cn("h-3 w-3", statusOpt?.color || "text-muted-foreground")} />;
-                                      })()}
+                                      <span className="w-5 flex justify-center">
+                                        {(() => {
+                                          const currentStatus = getStatusForIssue(issue);
+                                          const statusOpt = defaultStatusOptions.find(s => s.value === currentStatus);
+                                          const StatusIconComponent = statusOpt?.icon || DashedCircle;
+                                          return <StatusIconComponent className={cn("h-3.5 w-3.5 flex-shrink-0", statusOpt?.color || "text-muted-foreground")} />;
+                                        })()}
+                                      </span>
                                     </button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="start" className="w-[200px]">
@@ -1256,7 +1284,7 @@ const MyIssues = () => {
                                             isSelected ? "!bg-muted/50" : ""
                                           )}
                                         >
-                                          <IconComponent className={cn("h-3 w-3", option.color)} />
+                                    <IconComponent className={cn("h-4 w-4", option.color)} />
                                           <span className="flex-1">{option.value}</span>
                                           {isSelected && <Check className="h-3 w-3" />}
                                         </DropdownMenuItem>

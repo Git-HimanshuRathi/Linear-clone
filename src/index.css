@@ -30,7 +30,8 @@ All colors MUST be HSL.
     --muted: 210 8% 11%; /* #1A1C1E */
     --muted-foreground: 0 0% 44%; /* #6F7074 */
 
-    --accent: 243 75% 59%;
+    /* Hover accent should be light grey, not violet */
+    --accent: 210 8% 15%; /* #232527 */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 63% 51%;
@@ -38,7 +39,7 @@ All colors MUST be HSL.
 
     --border: 210 8% 11%; /* #1A1C1E */
     --input: 210 8% 11%;
-    --ring: 243 75% 59%;
+    --ring: 210 8% 30%;
 
     --text-primary: 0 0% 100%; /* #FFFFFF */
     --text-secondary: 0 0% 62%; /* #9B9CA0 */
@@ -75,15 +76,16 @@ All colors MUST be HSL.
     --muted: 220 10% 96%;
     --muted-foreground: 215 15% 40%;
 
-    --accent: 176 70% 45%;
-    --accent-foreground: 210 20% 98%;
+    /* Light theme: use subtle grey hover as well */
+    --accent: 220 10% 94%;
+    --accent-foreground: 220 15% 10%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 210 20% 98%;
 
     --border: 220 13% 88%;
     --input: 220 13% 88%;
-    --ring: 176 70% 45%;
+    --ring: 220 10% 70%;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 220 15% 20%;

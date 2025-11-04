@@ -141,14 +141,14 @@ export const Sidebar = ({ onCommandClick, onWidthChange, onToggleRef, isMobile =
   const navigate = useNavigate();
   const { resetOnboarding } = useOnboarding();
 
-  const sidebarWidth = isCollapsed ? 64 : 200;
+  const sidebarWidth = isCollapsed ? 64 : 224;
 
   const toggleSidebar = useCallback(() => {
     setIsCollapsed((prev) => {
       const newCollapsed = !prev;
       localStorage.setItem("sidebar-collapsed", String(newCollapsed));
       if (onWidthChange) {
-        onWidthChange(newCollapsed ? 64 : 200);
+        onWidthChange(newCollapsed ? 64 : 234);
       }
       return newCollapsed;
     });

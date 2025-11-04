@@ -52,6 +52,16 @@ import {
   XCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import UrgentIcon from "@/components/icons/UrgentIcon";
+import PriorityHighIcon from "@/components/icons/PriorityHighIcon";
+import PriorityMediumIcon from "@/components/icons/PriorityMediumIcon";
+import PriorityLowIcon from "@/components/icons/PriorityLowIcon";
+import TodoIcon from "@/components/icons/TodoIcon";
+import InProgressIcon from "@/components/icons/InProgressIcon";
+import DoneIcon from "@/components/icons/DoneIcon";
+import CanceledIcon from "@/components/icons/CanceledIcon";
+import DuplicateIcon from "@/components/icons/DuplicateIcon";
+import BacklogIcon from "@/components/icons/BacklogIcon";
 
 export interface Milestone {
   id: string;
@@ -87,19 +97,20 @@ interface NewProjectModalProps {
 }
 
 const defaultPriorityOptions = [
-  { value: "No priority", icon: "0", color: "text-muted-foreground", number: 0 },
-  { value: "Urgent", icon: AlertCircle, color: "text-red-500", number: 1 },
-  { value: "High", icon: BarChart3, color: "text-orange-500", number: 2 },
-  { value: "Medium", icon: BarChart2, color: "text-yellow-500", number: 3 },
-  { value: "Low", icon: BarChart, color: "text-blue-500", number: 4 },
+  { value: "No priority", icon: "---", color: "text-muted-foreground", number: 0 },
+  { value: "Urgent", icon: UrgentIcon, color: "text-muted-foreground", number: 1 },
+  { value: "High", icon: PriorityHighIcon, color: "text-muted-foreground", number: 2 },
+  { value: "Medium", icon: PriorityMediumIcon, color: "text-muted-foreground", number: 3 },
+  { value: "Low", icon: PriorityLowIcon, color: "text-muted-foreground", number: 4 },
 ];
 
 const defaultStatusOptions = [
-  { value: "Backlog", icon: Inbox, color: "text-orange-500" },
-  { value: "Planned", icon: CheckSquare, color: "text-muted-foreground" },
-  { value: "In Progress", icon: PlayCircle, color: "text-yellow-500" },
-  { value: "Completed", icon: CheckCircle2, color: "text-primary" },
-  { value: "Cancelled", icon: XCircle, color: "text-red-500" },
+  { value: "Backlog", icon: BacklogIcon, color: "text-muted-foreground" },
+  { value: "Todo", icon: TodoIcon, color: "text-muted-foreground" },
+  { value: "In Progress", icon: InProgressIcon, color: "text-yellow-500" },
+  { value: "Completed", icon: DoneIcon, color: "text-purple-500" },
+  { value: "Cancelled", icon: CanceledIcon, color: "text-red-500" },
+  { value: "Duplicate", icon: DuplicateIcon, color: "text-muted-foreground" },
 ];
 
 const defaultLabelsWithColors = [

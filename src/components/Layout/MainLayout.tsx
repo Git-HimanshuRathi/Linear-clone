@@ -8,7 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export const MainLayout = () => {
   const [commandOpen, setCommandOpen] = useState(false);
-  const [sidebarWidth, setSidebarWidth] = useState(200);
+  const [sidebarWidth, setSidebarWidth] = useState(224);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const toggleSidebarRef = useRef<(() => void) | null>(null);
   const isMobile = useIsMobile();

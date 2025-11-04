@@ -51,19 +51,20 @@ import {
   Link2,
   GitBranch,
   Check,
-  AlertCircle,
-  BarChart3,
-  BarChart2,
-  BarChart,
   Circle,
   Search,
-  Inbox,
-  CheckSquare,
-  PlayCircle,
-  CheckCircle2,
-  XCircle,
   Copy,
 } from "lucide-react";
+import BacklogIcon from "@/components/icons/BacklogIcon";
+import TodoIcon from "@/components/icons/TodoIcon";
+import InProgressIcon from "@/components/icons/InProgressIcon";
+import DoneIcon from "@/components/icons/DoneIcon";
+import CanceledIcon from "@/components/icons/CanceledIcon";
+import DuplicateIcon from "@/components/icons/DuplicateIcon";
+import UrgentIcon from "@/components/icons/UrgentIcon";
+import PriorityHighIcon from "@/components/icons/PriorityHighIcon";
+import PriorityMediumIcon from "@/components/icons/PriorityMediumIcon";
+import PriorityLowIcon from "@/components/icons/PriorityLowIcon";
 import { cn } from "@/lib/utils";
 import { db } from "@/db/database";
 
@@ -139,12 +140,12 @@ export const NewIssueModal = ({ open, onOpenChange, onIssueCreated }: NewIssueMo
   const [subIssueLabelSearchValue, setSubIssueLabelSearchValue] = useState("");
 
   const defaultStatusOptions = [
-    { value: "Backlog", icon: Inbox, number: "1", color: "text-muted-foreground" },
-    { value: "Todo", icon: CheckSquare, number: "2", color: "text-muted-foreground" },
-    { value: "In Progress", icon: PlayCircle, number: "3", color: "text-yellow-500" },
-    { value: "Done", icon: CheckCircle2, number: "4", color: "text-primary" },
-    { value: "Cancelled", icon: XCircle, number: "5", color: "text-red-500" },
-    { value: "Duplicate", icon: Copy, number: "6", color: "text-red-500" },
+    { value: "Backlog", icon: BacklogIcon, number: "1", color: "text-muted-foreground" },
+    { value: "Todo", icon: TodoIcon, number: "2", color: "text-muted-foreground" },
+    { value: "In Progress", icon: InProgressIcon, number: "3", color: "text-yellow-500" },
+    { value: "Done", icon: DoneIcon, number: "4", color: "text-purple-500" },
+    { value: "Cancelled", icon: CanceledIcon, number: "5", color: "text-red-500" },
+    { value: "Duplicate", icon: DuplicateIcon, number: "6", color: "text-muted-foreground" },
   ];
 
   // Get all statuses (default + custom from localStorage)
@@ -160,11 +161,11 @@ export const NewIssueModal = ({ open, onOpenChange, onIssueCreated }: NewIssueMo
   );
 
   const defaultPriorityOptions = [
-    { value: "No priority", icon: "0", color: "text-muted-foreground" },
-    { value: "Urgent", icon: AlertCircle, color: "text-red-500" },
-    { value: "High", icon: BarChart3, color: "text-orange-500" },
-    { value: "Medium", icon: BarChart2, color: "text-yellow-500" },
-    { value: "Low", icon: BarChart, color: "text-blue-500" },
+    { value: "No priority", icon: "---", color: "text-muted-foreground" },
+    { value: "Urgent", icon: UrgentIcon, color: "text-muted-foreground" },
+    { value: "High", icon: PriorityHighIcon, color: "text-muted-foreground" },
+    { value: "Medium", icon: PriorityMediumIcon, color: "text-muted-foreground" },
+    { value: "Low", icon: PriorityLowIcon, color: "text-muted-foreground" },
   ];
 
   // Get all priorities (default + custom from localStorage)

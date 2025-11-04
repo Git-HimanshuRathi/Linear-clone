@@ -22,11 +22,11 @@ const Landing = () => {
   const { isCompleted } = useOnboarding();
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Only redirect to dashboard if onboarding is completed
+  // Only redirect to issues page if onboarding is completed
   // If not completed, show landing page (user can start onboarding via "Start building" button)
   useEffect(() => {
     if (isCompleted) {
-      navigate("/dashboard", { replace: true });
+      navigate("/my-issues", { replace: true });
     }
     // If not completed, stay on landing page - don't redirect
   }, [isCompleted, navigate]);
